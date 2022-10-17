@@ -4,8 +4,9 @@
  
 __global__ void add(int n, double *x, double *y, double *z)
 {
-  int i = blockIdx.x*blockDim.x + threadIdx.x;
-  if (i < n) z[i] = x[i] + y[i];
+  int total_threads =  blockDim.x * gridDim.x;;
+  int thread_id = blockIdx.x*blockDim.x + threadIdx.x;
+  for (int i = thread_id; i<n; i += total_threads) z[i] = x[i] + y[i];
 }
  
 int main(void)

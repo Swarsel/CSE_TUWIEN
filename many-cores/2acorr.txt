@@ -1,0 +1,25 @@
+__device__ void sum(double * shared_m, double * result) {
+
+for (int stride = blockDim.x/2; stride>0; stride/=2) {
+__syncthreads();
+if (threadIdx.x < stride)
+shared_m[threadIdx.x] += shared_m[threadIdx.x + stride];
+}
+if (threadIdx.x == 0) {
+result[blockIdx.x] = shared_m[0];
+}}
+ 
+__global__ void dot_product(int N, double *x, double *y, double * result) {
+
+__shared__ double shared_m[256];
+double thread_sum = 0; 
+int threads_step = 256;
+int thread_id = blockIdx.x*blockDim.x + threadIdx.x;
+for (int i = thread_id; i<N; i += threads_step)
+thread_sum += x[i] * y[i];
+
+shared_m[threadIdx.x] = thread_sum;
+sum(shared_m, result);
+
+
+}

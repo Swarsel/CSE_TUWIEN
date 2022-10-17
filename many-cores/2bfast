@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include "timer.hpp"
+ 
+
+__global__ void prod(int n, double *x, double *y, double *z)
+{
+  int i = blockIdx.x*blockDim.x + threadIdx.x;
+  if (i < n) z[i] = x[i] * y[i];
+}
+ 
+int main(void)
+{
+  int N = 10;
+
+      double sum;
+      double *x, *y, *z, *d_x, *d_y, *d_z;
+      Timer timer;
+ 
+      // Allocate host memory and initialize
+      x = (double*)malloc(N*sizeof(double));
+      y = (double*)malloc(N*sizeof(double));
+      z = (double*)malloc(N*sizeof(double));
+ 
+      for (int i = 0; i < N; i++) {
+        x[i] = 1.0f;
+        y[i] = 2.0f;
+      }
+ 
+      // Allocate device memory and copy host data over
+      cudaMalloc(&d_x, N*sizeof(double)); 
+      cudaMalloc(&d_y, N*sizeof(double));
+      cudaMalloc(&d_z, N*sizeof(double));
+ 
+      cudaMemcpy(d_x, x, N*sizeof(double), cudaMemcpyHostToDevice);
+      cudaMemcpy(d_y, y, N*sizeof(double), cudaMemcpyHostToDevice);
+ 
+      // wait for previous operations to finish, then start timings
+      cudaDeviceSynchronize();
+      timer.reset();
+ 
+      // Perform SAXPY on 1M elements
+      prod<<<4096, 256>>>(N, d_x, d_y, d_z);
+ 
+      // wait for kernel to finish, then print elapsed time
+      cudaDeviceSynchronize();
+      
+ 
+      // copy data back (implicit synchronization point)
+      cudaMemcpy(z, d_z, N*sizeof(double), cudaMemcpyDeviceToHost);
+      for(int i = 0; i < N; i++) sum += z[i];
+
+      printf("%f", timer.get());
+      printf("\n%f", sum);
+
+      // Numerical error check:
+      float maxError = 0.0f;
+      for (int i = 0; i < N; i++)
+        maxError = max(maxError, abs(y[i]-4.0f));
+      //printf("Max error: %f\n", maxError);
+ 
+      // tidy up host and device memory
+      cudaFree(d_x);
+      cudaFree(d_y);
+      cudaFree(d_z);
+      free(x);
+      free(y);
+   
+  return EXIT_SUCCESS;
+}
+ 
