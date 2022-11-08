@@ -58,6 +58,7 @@ for n in ns:
     lebesque_c_unif.append(functions.lebesgue_const(x_exact, x_unif))
     lebesque_c_cheb.append(functions.lebesgue_const(x_exact, x_cheb))
 
+#c
 coefs = np.polyfit([20,40], np.log(lebesque_c_unif[1:]), deg=1)
 b = coefs[0]
 C = np.exp(coefs[1])
