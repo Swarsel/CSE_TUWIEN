@@ -1,15 +1,18 @@
 import matplotlib.pyplot as plt
-import math
+import numpy as np
 
 k_max = 30
 u_seq = [2]
 abs_err = []
 
 for k in range(1, k_max + 1):
-    u = 2 ** k * math.sqrt(2 * (1 - math.sqrt(1 - (2 ** (-k) * u_seq[k - 1]) ** 2)))
+    # sqrt goes to zero, some decimal places are lost before
+    u = 2 ** k * np.sqrt(2 * (1 - np.sqrt(1 - (2 ** (-k) * u_seq[k - 1]) ** 2)))
+    print(f"k={k}, order or 2^k {np.floor(np.log(2 ** k))} order of sqrt {np.floor(np.log(np.sqrt(2 * (1 - np.sqrt(1 - (2 ** (-k) * u_seq[k - 1]) ** 2)))))}, error {abs(np.pi - u)}")
+
     u_seq.append(u)
 
-    abs_err.append(abs(math.pi - u))
+    abs_err.append(abs(np.pi - u))
 
 print("minimum error at k = {}".format(abs_err.index(min(abs_err)) + 1))
 
