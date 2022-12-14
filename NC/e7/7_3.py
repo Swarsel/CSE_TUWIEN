@@ -9,10 +9,9 @@ b = np.reshape(b, (n, 1))
 A = 10 * np.identity(n) + b @ e.T + e @ b.T
 A_tilde = np.flip(A)
 
-#permutation matrix not needed -> _
+# permutation matrix not needed -> _
 _, L, U = sp.linalg.lu(A)
 _, L_tilde, U_tilde = sp.linalg.lu(A_tilde)
-
 
 fig, axs = plt.subplots(2, 3)
 
@@ -31,4 +30,3 @@ axs[1, 2].spy(U_tilde)
 axs[1, 2].set_title('U_tilde')
 
 plt.show()
-# A tilde is better, less data needed
