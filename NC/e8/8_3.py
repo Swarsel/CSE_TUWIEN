@@ -1,10 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-N = lambda n: 2 ** n
+
+def N(n):
+    return 2 ** n
+
 
 # set range of n
-n_min, n_max  = 2, 10
+n_min, n_max = 2, 10
 n_vals = list(range(n_min, n_max + 1))
 
 # Taylor series solution for a1 and a3
@@ -29,24 +32,24 @@ for n in n_vals:
     # populate vector b
     b[n - 2] = np.sin(x_j)
 
+    # Fulfill (A^T * A) * x = A^T * b -> x = (A^T * A)^(-1) * (A^T * b)
     # A^T
-    A_T = np.transpose(A)
+    A_T = A.T
 
     # A^T * A
-    A_T_A = np.matmul(A_T, A)
+    A_T_A = A_T @ A
 
     # (A^T * A)^(-1)
     A_T_A_inv = np.linalg.inv(A_T_A)
 
     # (A^T * b)
-    A_T_b = np.matmul(A_T, b)
+    A_T_b = A_T @ b
 
-    # x = (A^T * A)^(-1)
-    x = np.matmul(A_T_A_inv, A_T_b)
+    # x = (A^T * A)^(-1)(A^T * b)
+    x = A_T_A_inv @ A_T_b
 
     a1_error.append(abs(x[0][0] - a1))
     a3_error.append(abs(x[1][0] - a3))
-
 
 plt.semilogy([n for n in n_vals], a1_error, label="a1")
 plt.semilogy([n for n in n_vals], a3_error, label="a3")

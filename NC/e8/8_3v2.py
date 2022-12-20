@@ -18,43 +18,42 @@ a1_error = []
 a3_error = []
 
 for n in n_vals:
-    print(n)
     # set up A and b matrices of Ax = b
     A = np.zeros((N(n), 2))
     b = np.zeros((N(n), 1))
 
     # create random points from given interval
-    x_j = np.array([np.random.uniform(-1 / N(n), 1 / N(n), 1) for _ in range(N(n))])
-    x_j = np.reshape(x_j, (N(n), 1))
+    x_j = np.random.uniform(-1 / N(n), 1 / N(n), (N(n), 1))
 
     # populate matrix A
     A[:, 0] = x_j[:, 0]
     A[:, 1] = x_j[:, 0] ** 3
 
     # populate vector b
-    b[:] = np.sin(x_j)
+    b = np.sin(x_j)
 
+    # Fulfill (A^T * A) * x = A^T * b -> x = (A^T * A)^(-1) * (A^T * b)
     # A^T
-    A_T = np.transpose(A)
+    A_T = A.T
 
     # A^T * A
-    A_T_A = np.matmul(A_T, A)
+    A_TA = A_T @ A
 
     # (A^T * A)^(-1)
-    A_T_A_inv = np.linalg.inv(A_T_A)
+    A_TA_inv = np.linalg.inv(A_TA)
 
     # (A^T * b)
-    A_T_b = np.matmul(A_T, b)
+    A_Tb = A_T @ b
 
-    # x = (A^T * A)^(-1)
-    x = np.matmul(A_T_A_inv, A_T_b)
+    # x = (A^T * A)^(-1)(A^T * b)
+    x = A_TA_inv @ A_Tb
 
     a1_error.append(abs(x[0][0] - a1))
     a3_error.append(abs(x[1][0] - a3))
 
-plt.semilogy([n for n in n_vals], a1_error, label="a1")
-plt.semilogy([n for n in n_vals], a3_error, label="a3")
-plt.xlabel("n")
+plt.semilogy([n for n in n_vals], a1_error, label=f"$a_1$ difference from {a1}")
+plt.semilogy([n for n in n_vals], a3_error, label=f"$a_3$ difference from {float(str(a3)[:6])}")
+plt.xlabel("$n$")
 plt.ylabel("error")
 plt.legend()
 plt.show()
