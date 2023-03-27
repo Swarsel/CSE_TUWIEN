@@ -1,0 +1,63 @@
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+N = 4
+
+def calc_u(N,h)
+    a = np.zeros((N+1,N+1))
+    b = 0
+
+    for i in range(1,N-1):
+        for j in range(N-1):
+            if j == i-1 or j == i+1:
+                a[i][j] = 1
+            elif j == i:
+                a[i][j] = -2
+                b.append(3*i*h**3)
+                b.append(1)
+
+    print(f"a: {a}")
+    print(f"b: {b}")
+    u = np.linalg.solve(a,b)
+    print(f"ui: {u}")
+    return u
+
+
+def u(x):
+    return (-1/2)*(x**3) + (3/2)*x
+
+def error(N,h):
+    u=calc_u(N,h)
+    error = [abs(analytic_solution((i*h+(i+1)*h)/2)-((u[i]+u[i+1])/2)) for i in range(N-2)]
+    return max(error)
+
+points = np.linspace(0,1,100)
+
+N = 10
+h = 1/N
+
+u = calc_u(N, h)
+x_plot = np.zeros(N-1)
+x_plot = [i*h for i in range(1,N)]
+
+plt.plot(x_plot, [analytic_solution(x) for x in x_plot], ":", label="analytical solution")
+plt.plot(x_plot, u, "x", label="solution with FDM")
+plt.title("FDM versus analytical solution with N={}".format(N))
+plt.legend()
+
+# plt.subplot(211)
+# plt.plot(points,u(points),label="exact")
+# discr = np.linspace(0,1,N+1)
+# errors = np.abs(x-u(discr))
+# plt.plot(discr,x,"--x",label="FD")
+# plt.legend()
+# plt.xlabel("x")
+# plt.ylabel("u(x)")
+
+# plt.subplot(212)
+# plt.plot(range(N+1),errors,"--x")
+# plt.xlabel("j")
+# plt.xticks(range(N+1))
+# plt.ylabel("error")
+# plt.show()
