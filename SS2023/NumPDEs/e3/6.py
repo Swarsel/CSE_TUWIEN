@@ -7,11 +7,11 @@ def calc_u(N,h):
     b = []
 
     for i in range(N-1):
-        if((i-1)>=0):
-            A[i, i-1] = -1
-        A[i, i] = 2
-        if((i+1)<(N-1)):
+        if i < N - 2:
             A[i, i+1] = -1
+        A[i, i] = 2
+        if i > 0:
+            A[i, i-1] = -1
         b.append(3*(i+1)*h**3)
     b[-1] += 1
 
@@ -45,13 +45,13 @@ plt.legend()
 plt.xlabel("x")
 plt.ylabel("u(x)")
 
-L = [5*i for i in range(2, 10)]
-H = [1/l for l in L]
-error = [error(n, h) for n,h in zip(L,H)]
-print(error)
+#steps = [i for i in range(3, 50)]
+h_i = [1/l for l in steps]
+error = [error(n, h) for n,h in zip(steps,h_i)]
+#print(error)
 
 plt.subplot(212)
-plt.plot(L, error)
+plt.plot(steps, error)
 plt.xlabel("n")
 plt.ylabel("error")
 plt.show()
