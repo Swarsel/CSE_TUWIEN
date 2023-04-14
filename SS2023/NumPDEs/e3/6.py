@@ -8,18 +8,17 @@ def calc_u(N,h):
 
     for i in range(N-1):
         if i < N - 2:
-            A[i, i+1] = -1
+            A[i, i + 1] = -1
         A[i, i] = 2
         if i > 0:
-            A[i, i-1] = -1
+            A[i, i - 1] = -1
         b.append(3*(i+1)*h**3)
     b[-1] += 1
 
-
+    u = np.linalg.solve(A,b)
     #print(f"A: {A}")
     #print(f"b: {b}")
-    u = np.linalg.solve(A,b)
-    #print(f"ui: {u}")
+    #print(f"u: {u}")
     return u
 
 
@@ -28,10 +27,9 @@ def sol(x):
 
 def error(N,h):
     u=calc_u(N,h)
-    error = [abs(sol((i*h+(i+1)*h)/2)-((u[i]+u[i+1])/2)) for i in range(N-2)]
-    return max(error)
+    return max([abs(sol((i*h+(i+1)*h)/2)-((u[i]+u[i+1])/2)) for i in range(N-2)])
 
-N = 10
+N = 5
 h = 1/N
 
 u = calc_u(N, h)
@@ -45,7 +43,7 @@ plt.legend()
 plt.xlabel("x")
 plt.ylabel("u(x)")
 
-#steps = [i for i in range(3, 50)]
+steps = [i for i in range(3, 50)]
 h_i = [1/l for l in steps]
 error = [error(n, h) for n,h in zip(steps,h_i)]
 #print(error)
