@@ -22,7 +22,7 @@ def gauss(f, m, k):
 
 x = np.linspace(-1, 1, 100)
 for k in range(0, 5):
-    plt.plot(x, [evalLegendre(xi, k) for xi in x], label=f"k={k}")
+    plt.plot(x, [evalLegendre(xi, k) for xi in x], label=f"$L_{k}(x)$")
 plt.title("Legendre Polynomials by recursion formula")
 plt.legend()
 plt.ylim(-1.5,1.5)
@@ -30,7 +30,7 @@ plt.grid()
 plt.show()
 
 for k in range(1, 5):
-    plt.plot(x, [eval_integrated_legendre(xi, k) for xi in x], label=f"k={k}")
+    plt.plot(x, [eval_integrated_legendre(xi, k) for xi in x], label=f"$N_{k}(x)$")
 plt.title("Integrated Legendre Polynomials")
 plt.legend()
 plt.ylim(-1.5,1.5)
