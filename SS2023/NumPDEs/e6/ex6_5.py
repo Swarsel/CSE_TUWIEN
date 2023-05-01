@@ -8,7 +8,7 @@ def evalLegendre(x, k):
     if k == 0:
         return 1
     else:
-        return (2 * k - 1) * x * evalLegendre(x, k - 1) - (k - 1) * evalLegendre(x, k - 2)
+        return ((2 * k - 1) * x * evalLegendre(x, k - 1) - (k - 1) * evalLegendre(x, k - 2))/k
 
 
 def eval_integrated_legendre(x, k):
@@ -21,16 +21,20 @@ def gauss(f, m, k):
 
 
 x = np.linspace(-1, 1, 100)
-for k in range(2, 5):
+for k in range(0, 5):
     plt.plot(x, [evalLegendre(xi, k) for xi in x], label=f"k={k}")
 plt.title("Legendre Polynomials by recursion formula")
 plt.legend()
+plt.ylim(-1.5,1.5)
+plt.grid()
 plt.show()
 
-for k in range(2, 5):
+for k in range(1, 5):
     plt.plot(x, [eval_integrated_legendre(xi, k) for xi in x], label=f"k={k}")
 plt.title("Integrated Legendre Polynomials")
 plt.legend()
+plt.ylim(-1.5,1.5)
+plt.grid()
 plt.show()
 
 
