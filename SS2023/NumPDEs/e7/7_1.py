@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 def exact(x):
     """ exact solution for -u'' + u = 2sin(x) """
-    return np.sin(x)
+    return x ** (2/3) * (1 - x)
 
 
 def nodes(n, a=0, b=np.pi):
