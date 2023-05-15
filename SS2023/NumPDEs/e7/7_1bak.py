@@ -33,7 +33,7 @@ def int_leg(x, k):
         return (leg(x, k + 1) - leg(x, k - 1)) / (2 * k + 1)
 
 
-def gauss_a1(p, i, j, N, a=-1, b=1):
+def gauss_a(p, i, j, a=-1, b=1):
     """
     solves lhs a(phi1, phi2) = int (nabla phi1 nabla phi2 + phi1 * phi2)
     using the integrated legendres as base
@@ -41,26 +41,14 @@ def gauss_a1(p, i, j, N, a=-1, b=1):
     x, w = np.polynomial.legendre.leggauss(p)
     # basis functions are the Ni -> use Li for nabla phi
     x = ((b - a) / 2) * x + ((b + a) / 2)
-    return ((b - a) / 2) * sum(w * (2*len(N))/np.pi * (leg(x, i) * leg(x, j)))
-
-def gauss_a2(p, i, j, N, a=-1, b=1):
-    """
-    solves lhs a(phi1, phi2) = int (nabla phi1 nabla phi2 + phi1 * phi2)
-    using the integrated legendres as base
-    """
-    x, w = np.polynomial.legendre.leggauss(p)
-    # basis functions are the Ni -> use Li for nabla phi
-    x = ((b - a) / 2) * x + ((b + a) / 2)
-    return ((b - a) / 2) * sum(w * (2*len(N))/np.pi * (int_leg(x,i) * int_leg(x, j)))
+    return ((b - a) / 2) * sum(w * (leg(x, i) * leg(x, j) + int_leg(x,i) * int_leg(x, j)))
 
 
-
-
-def gauss_f(p, i, N, a=-1, b=1):
+def gauss_f(p, i, a=-1, b=1):
     """ solves rhs l(phi1) = int( 2sin(x) * phi1) using the integrated legendres as base"""
     x, w = np.polynomial.legendre.leggauss(p)
     x = ((b - a) / 2) * x + ((b + a) / 2)
-    return ((b - a) / 2) * sum(w * (2 * np.sin(x) * (2*len(N))/np.pi * int_leg(x, i)))
+    return ((b - a) / 2) * sum(w * (2 * np.sin(x) * int_leg(x, i)))
 
 
 def connectivity_T(N, p, i):
@@ -114,7 +102,7 @@ def element_stiffness_matrix(p, N):
         A_T = np.zeros((dim, dim))
         for i in range(dim):
             for j in range(dim):
-                A_T[i][j] = gauss_a1(p, i, j, N) + gauss_a2(p, i, j, N)
+                A_T[i][j] = gauss_a(p, i, j, a=N[t], b=N[t + 1])
         AT.append(A_T)
     return AT
 
@@ -128,7 +116,7 @@ def element_load_vector(p, N):
     for t in range(num_elem):
         f_T = np.zeros((dim, 1))
         for i in range(dim):
-            f_T[i][0] = gauss_f(p, i, N)
+            f_T[i][0] = gauss_f(p, i, a=N[t], b=N[t + 1])
         fT.append(f_T)
     return fT
 
@@ -175,7 +163,7 @@ def plot():
             print(f"Working on p={p},N={n}")
             N = nodes(n)
             num_global_functions = calc_num_global_functions(p, N)
-            N_split = np.linspace(-1, 1, num_global_functions)
+            N_split = np.linspace(0, np.pi, num_global_functions)
             fT = element_load_vector(p, N)
             AT = element_stiffness_matrix(p, N)
             CT = connectivity(N, p)
@@ -201,11 +189,11 @@ def plot():
 
 
 
-plot()
+# plot()
 
 # testbench
 p = 3  # order
-N = np.linspace(-1, 1, 4)
+N = np.linspace(0, np.pi, 4)
 num_global_functions = calc_num_global_functions(p, N)
 N_split = np.linspace(0, np.pi, num_global_functions)
 lb, rb = 0, np.pi
@@ -224,5 +212,7 @@ u = np.linalg.solve(A, F)
 error = np.array([abs(ui - exact(n)) for ui, n in zip(u, N_split)])
 normed = energy_norm(error, A)
 print(energy_norm(error, A))
+
+
 
 
