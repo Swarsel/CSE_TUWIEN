@@ -3,26 +3,27 @@ import scipy as sp
 from scipy.integrate import quad
 import matplotlib.pyplot as plt
 
+
 def fem_1d(nodes):
-    # equidistant grid points
-    N = len(nodes) -1
+    N = len(nodes) - 1
     # vector of elements dependant on nodes
     dx = nodes[1:] - nodes[:-1]
 
-    # stiffness matrix
+    # stiffness matrix - this sadly quickly starts to eat a lot of memory
+    # i also tried to set it manually elementwise - but it is a lot faster and we also quickly reach
+    # max array size
     A = np.diag(1 / dx[:-1] + 1 / dx[1:])
     A = A - np.diag(1 / dx[1:-1], 1)
     A = A - np.diag(1 / dx[1:-1], -1)
-    A = sp.sparse.csc_matrix(A)
+
+    A = sp.sparse.csc_matrix(A) # sparsify to save a bit of time
 
     # load vector
     def left(x, a, b):
-        #return (2 / 9 * (x ** (-4 / 3) + 5 * x ** (-1 / 3))) * ((x - a) / (b - a))
-        return ((21*x + 3)/(16 * x ** (5/4))) * ((x - a) / (b - a))
+        return (2 / 9 * (x ** (-4 / 3) + 5 * x ** (-1 / 3))) * ((x - a) / (b - a))
 
     def right(x, a, b):
-        #return (2 / 9 * (x ** (-4 / 3) + 5 * x ** (-1 / 3))) * ((b - x) / (b - a))
-        return ((21*x + 3)/(16 * x ** (5/4))) * ((b - x) / (b - a))
+        return (2 / 9 * (x ** (-4 / 3) + 5 * x ** (-1 / 3))) * ((b - x) / (b - a))
 
     f1 = np.zeros(N - 1)
     f2 = np.zeros(N - 1)
@@ -31,26 +32,29 @@ def fem_1d(nodes):
         f2[i - 1], _ = quad(lambda x: right(x, x_vals[i], x_vals[i + 1]), x_vals[i], x_vals[i + 1])
     f = (f1 + f2).T
 
-    u = sp.sparse.linalg.spsolve(A, f)
+    u = sp.sparse.linalg.spsolve(A, f)  # switched to scipy (seems more efficient)
     u = np.concatenate(([0], u.flatten(), [0]))  # add boundaries
 
     return A, f, u
 
-def energy_norm(u, f):
-    def du_l2(x):
-        return (2 / 3 * x ** (-1 / 3) - 5 / 3 * x ** (2 / 3)) ** 2
 
-    norm_u, _ = quad(lambda x: du_l2(x), 0, 1)
+def energy_norm(u, f):
+    # integral gives 6/7, so skip expensive calculation
+    # def du_l2(x):
+    #    return (2 / 3 * x ** (-1 / 3) - 5 / 3 * x ** (2 / 3)) ** 2
+
+    # norm_u, _ = quad(lambda x: du_l2(x), 0, 1)
     norm_uN = u[1:-1].T @ f
-    #error = norm_u - norm_uN
-    error = 3/5 - norm_uN
+    # error = norm_u - norm_uN
+    error = 6 / 7 - norm_uN
     return error
 
 
 def estimate(u, nodes):
     def f_squared(x):
-        #return (2 / 9 * (x ** (-4 / 3) + 5 * x ** (-1 / 3))) ** 2
-        return (9*(7*x+1) ** 2) / (256*x ** (5/2))
+        # return (2 / 9 * (x ** (-4 / 3) + 5 * x ** (-1 / 3))) ** 2
+        return (4 * (5 * x + 1) ** 2) / (
+                81 * x ** (8 / 3))  # simplified expression from WolframAlpha to maybe save time
 
     dx = nodes[1:] - nodes[:-1]
     midpoints = 0.5 * (nodes[1:] + nodes[:-1])
@@ -58,81 +62,74 @@ def estimate(u, nodes):
     f_mid = f_squared(midpoints)
     f_norm = dx * f_mid
 
-    u_diff = u[1:] - u[:-1]
-    u_diff /= dx
+    u_diff = (u[1:] - u[:-1]) / dx
 
-    normal_jump = (u_diff[1:] - u_diff[:-1]) ** 2
+    # p.54
+    normal_jump = (u_diff[1:] - u_diff[:-1]) ** 2  # differences of u in nodal values
     normal_jump = np.concatenate(([0], normal_jump.flatten(), [0]))  # add boundaries
-    normal_jump = normal_jump[1:] + normal_jump[:-1]
-    res = dx ** 2 * f_norm + dx * normal_jump
-    return res
-    
-# step size
-h = 0.2
-# equidistant grid points
-x_vals = np.arange(0, 1 + h, h)
-
-# marking parameter
-percent = 1
-# tolerance for eta - stopping criterion
-tol = 0.008
-# set initial eta to be bigger than tolerance
-eta= tol + 1
-eta_sum = tol + 1
+    normal_jump = normal_jump[1:] + normal_jump[:-1]  # sum of adjacent derivatives
+    res_error = dx ** 2 * f_norm + dx * normal_jump
+    return res_error
 
 
-# list of number of elements
-no_elements = [0]
-# list of errors
-errors = [0]
-# list of etas
-etas = [0]
-# loop counter
-k = 1
+# marking parameter and tolerance for each - i run out for memory if i dont adjust it
+# also added are the errors in the energy norm that i received for the same size problem in 8.1
+for theta, tol, ex1 in zip([0.25, 1], [0.005, 0.05], [0.0577316664423978, 0.019631474377605374]):
+    h = 0.2
+    x_vals = np.arange(0, 1 + h, h)
 
-while eta_sum > tol:
-    ## SOLVE
+    no_elements = []
+    errors = []
+    etas = []
 
-    # solve poisson problem
-    A, f, u = fem_1d(x_vals)
-     
-    ## ESTIMATE
-    
-    # local error contributions
-    eta_T = estimate(u, x_vals)
-    # cumulative sum of local error estimators
-    idx = np.argsort(eta_T)[::-1]
-    eta = np.cumsum(eta_T[idx])
-    eta_sum = eta[-1]
-    
-    ## MARK
-    
-    # indices of selected elements
-    marked = []
-    for i in range(len(eta_T)):
-        print(eta_T[i])
-        if eta_T[i] >= percent * eta_sum:
-            marked.append(i)
-    #marked = idx[:np.argmax(eta >= percent * eta_sum)+1 ]
-    marked_sorted = np.sort(marked)
-    print(marked_sorted)
-    
-    ## REFINE
+    while True:
+        # SOLVE
+        A, f, u = fem_1d(x_vals)
 
-    for i in marked_sorted:
-        x_vals = np.concatenate((x_vals[:marked_sorted[i]+i+1],
-                                 0.5* (x_vals[marked_sorted[i]+i] + x_vals[marked_sorted[i]+i+1]),
-                                 x_vals[marked_sorted[i]+i+1:]), axis=None)
+        # ESTIMATE
+        eta_T = estimate(u, x_vals)  # get local error contributions
+        idx = np.argsort(eta_T)[::-1]  # descending list of sort indices
+        eta = np.cumsum(eta_T[idx])  # list of cumulative sums of local error estimators for dörfler marking
+        sum_eta = eta[-1]
 
-    # store current number of elements
-    no_elements.append(x_vals.size)
-    # store current error
-    errors.append(energy_norm(u, f))
-    # store current eta
-    etas.append(eta_sum)
-    # increment loop counter
-    k = k + 1
+        if sum_eta <= tol:
+            break
 
+        # MARK
+        marked = idx[:np.argmax(eta >= theta * sum_eta) + 1]  # dörfler marking, get indices of selected elements
+        marked_sorted = np.sort(marked)
 
+        # REFINE
+        for i in range(len(marked_sorted)):
+            # we add +i to each index because we are adding an element in each iteration
+            x_vals = np.concatenate((x_vals[:marked_sorted[i] + i + 1],
+                                     0.5 * (x_vals[marked_sorted[i] + i] + x_vals[marked_sorted[i] + i + 1]),
+                                     x_vals[marked_sorted[i] + i + 1:]), axis=None)
 
+        no_elements.append(x_vals.size)
+        errors.append(energy_norm(u, f))
+        etas.append(sum_eta)
 
+    plt.loglog(no_elements, errors, label="error")
+    plt.loglog(no_elements, etas, label="$\\eta$")
+    plt.title(f"error and indicator over $N$, $\\theta = {theta}$")
+    plt.xlabel("N")
+    plt.legend()
+    plt.grid()
+    plt.savefig(f"error_indicator_theta={theta}.png")
+    plt.show()
+    plt.close()
+
+    x_exact = np.linspace(0, 1, 100)
+    plt.title(f"FEM vs exact solution, N={no_elements[-1]}, theta={theta}")
+    plt.plot(x_exact, x_exact ** (2 / 3) * (1 - x_exact), label="exact solution")
+    plt.plot(x_vals, u, '-o', label="FEM")
+    plt.xlabel('x')
+    plt.ylabel('u(x)')
+    plt.grid(True)
+    plt.legend()
+    plt.savefig(f"fem_vs_exact_theta={theta}.png")
+    plt.show()
+    plt.close()
+
+    print(f"N={no_elements[-1]}, error={errors[-1]}, error of equivalent size FEM of ex1 was {ex1}")

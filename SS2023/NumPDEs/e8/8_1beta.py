@@ -82,3 +82,6 @@ plt.ylabel('error')
 plt.grid(True)
 plt.savefig(f"energynorm_betas.png")
 plt.show()
+
+print(f"N=220: error={fem_1d(200, 1)}")
+print(f"N=5121: error={fem_1d(5000, 1)}")
