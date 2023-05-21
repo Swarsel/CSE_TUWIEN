@@ -42,7 +42,7 @@ def fem_1d(N, beta):
     plt.grid(True)
     plt.legend()
     plt.savefig(f"N={N}_b={beta}.png")
-    #plt.show()
+    plt.show()
     plt.close()
 
     def du_l2(x):
