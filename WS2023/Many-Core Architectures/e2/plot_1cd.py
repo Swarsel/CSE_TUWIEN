@@ -7,5 +7,5 @@ t=[0.000009,0.000008,0.000008,0.000009,0.000011,0.000077,0.000229]
 plt.title("Execution times, vector addition")
 plt.xlabel("n")
 plt.ylabel("Time [s]")
-plt.semilogx(n, t)
+plt.loglog(n, t)
 plt.show()
