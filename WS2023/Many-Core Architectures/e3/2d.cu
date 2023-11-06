@@ -4,27 +4,27 @@
 #include "timer.hpp"
 #include "cuda_errchk.hpp"   // for error checking of CUDA calls
 
-__global__
-void transpose(double *A)
+__global__ void transpose(double *A)
 {
-  __shared__ float tile[16][16];
+  // the +1's are for avoiding shared memory bank conflicts
+  __shared__ float tile_1[16+1][16+1];
+  __shared__ float tile_2[16+1][16+1];
 
   int x = blockIdx.x * 16 + threadIdx.x;
   int y = blockIdx.y * 16 + threadIdx.y;
   int width = gridDim.x * 16;
+  int t_x = blockIdx.y * 16 + threadIdx.x;
+  int t_y = blockIdx.x * 16 + threadIdx.y;
 
-  for (int j = 0; j < 16; j += 8)
-     tile[threadIdx.y+j][threadIdx.x] = A[(y+j)*width + x];
+  tile_1[threadIdx.y][threadIdx.x] = A[y * width + x];
+  tile_2[threadIdx.y][threadIdx.x] = A[t_y * width + t_x];
 
   __syncthreads();
 
-  x = blockIdx.y * 16 + threadIdx.x;
-  y = blockIdx.x * 16 + threadIdx.y;
-
-  for (int j = 0; j < 16; j += 8)
-     A[(y+j)*width + x] = tile[threadIdx.x][threadIdx.y + j];
+  // for diagonal elements just perform the transpose, for off-diagonal elements also swap the respective tiles
+  if (blockIdx.y < blockIdx.x) A[t_y * width + t_x] = tile_1[threadIdx.x][threadIdx.y];
+  A[y * width + x] = tile_2[threadIdx.x][threadIdx.y];
 }
-
 
 void print_A(double *A, int N)
 {
