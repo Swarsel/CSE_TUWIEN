@@ -22,8 +22,8 @@ __global__ void transpose(double *A)
   __syncthreads();
 
   // for diagonal elements just perform the transpose, for off-diagonal elements also swap the respective tiles
-   if (blockIdx.y == blockIdx.x) A[y * width + x] = tile_2[threadIdx.x][threadIdx.y];
-   if (blockIdx.y < blockIdx.x) {
+  if (blockIdx.y == blockIdx.x) A[y * width + x] = tile_2[threadIdx.x][threadIdx.y];
+  else if (blockIdx.y < blockIdx.x) {
        A[t_y * width + t_x] = tile_1[threadIdx.x][threadIdx.y];
        A[y * width + x] = tile_2[threadIdx.x][threadIdx.y];
   }
@@ -37,6 +37,18 @@ void print_A(double *A, int N)
     }
     std::cout << std::endl;
   }
+}
+
+int error(double *A, double *B, int N) {
+  int misses = 0;
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < N; j++) {
+      if (A[i * N + j] != B[j * N + i]) {
+        misses += 1;
+      }
+    }
+  }
+  return misses;
 }
 
 int main(void)
