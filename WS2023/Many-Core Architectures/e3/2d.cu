@@ -22,8 +22,11 @@ __global__ void transpose(double *A)
   __syncthreads();
 
   // for diagonal elements just perform the transpose, for off-diagonal elements also swap the respective tiles
-  if (blockIdx.y < blockIdx.x) A[t_y * width + t_x] = tile_1[threadIdx.x][threadIdx.y];
-  A[y * width + x] = tile_2[threadIdx.x][threadIdx.y];
+   if (blockIdx.y == blockIdx.x) A[y * width + x] = tile_2[threadIdx.x][threadIdx.y];
+   if (blockIdx.y < blockIdx.x) {
+       A[t_y * width + t_x] = tile_1[threadIdx.x][threadIdx.y];
+       A[y * width + x] = tile_2[threadIdx.x][threadIdx.y];
+  }
 }
 
 void print_A(double *A, int N)
@@ -44,7 +47,7 @@ int main(void)
   int N = pow(2,n);
 
   dim3 dimGrid(N/16, N/16, 1);
-  dim3 dimBlock(16, 8, 1);
+  dim3 dimBlock(16, 16, 1);
 
   double *A, *cuda_A;
 
