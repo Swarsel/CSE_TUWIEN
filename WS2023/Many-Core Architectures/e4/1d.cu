@@ -35,14 +35,14 @@ bool check(const double& result, int N) {
  */
 int main() {
 
-  int N[7] = {100, 300, 1000, 10000, 100000, 1000000, 3000000};
+    int N[9] = {100, 300, 1000, 10000, 100000, 1000000, 3000000, 10000000, 100000000};
   Timer timer;
   double time;
   std::cout << "[";
  //
   // Allocate and initialize arrays on CPU
   //
-  for(int j=0; j <= 6; j++) {
+  for(int j=0; j <= 8; j++) {
       time = 0;
       double *x = (double *)malloc(sizeof(double) * N[j]);
       double *y = (double *)malloc(sizeof(double) * N[j]);
@@ -82,7 +82,7 @@ int main() {
         // free(y);
     }
 
-    if (j != 6) std::cout << time/10 << ", ";
+    if (j != 8) std::cout << time/10 << ", ";
     // std::cout << "Result of dot product: " << results << std::endl;
     CUDA_ERRCHK(cudaFree(cuda_x));
     //CUDA_ERRCHK(cudaFree(cuda_y));
