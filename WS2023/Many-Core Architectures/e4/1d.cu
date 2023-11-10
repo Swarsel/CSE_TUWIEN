@@ -72,6 +72,7 @@ int main() {
             CUDA_ERRCHK(cudaMemcpy(cuda_results, &results, sizeof(double), cudaMemcpyHostToDevice));
             timer.reset();
             task1_d<<<256, 256>>>(N[j], cuda_x, cuda_y, cuda_results);
+            CUDA_ERRCHK(cudaDeviceSynchronize());
             time += timer.get();
             CUDA_ERRCHK(cudaMemcpy(&results, cuda_results, sizeof(double), cudaMemcpyDeviceToHost));
             check(results, N[j]);

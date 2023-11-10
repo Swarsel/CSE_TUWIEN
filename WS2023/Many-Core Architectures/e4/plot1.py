@@ -1,26 +1,27 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-N = [100, 300, 1000, 10000, 100000, 1000000, 3000000];
+N = [100, 300, 1000, 10000, 100000, 1000000, 3000000, 10000000, 100000000];
 
-a=[2.9e-06, 1.8e-06, 1.9e-06, 2.1e-06, 2.2e-06, 2.5e-06, 3.1e-06, 5.9e-06, 6.8e-06]
-
-
-b=[2.9e-06, 2e-06, 1.8e-06, 2.1e-06, 1.9e-06, 2.2e-06, 3e-06, 5.7e-06, 1e-05]
+a=[1.44e-05, 1.83e-05, 2.35e-05, 2.34e-05, 0.0001262, 0.0010985, 0.0032829, 0.0107652, 0.104711]
 
 
-c=[2.5e-06, 1.8e-06, 1.7e-06, 2e-06, 2e-06, 2.2e-06, 3.3e-06, 5.2e-06, 6.3e-06]
+b=[2.2e-05, 2.31e-05, 2.82e-05, 3.02e-05, 0.0001309, 0.0010647, 0.0031639, 0.0104985, 0.104741]
 
 
-d=[2.9e-06, 1.8e-06, 1.8e-06, 1.8e-06, 2.2e-06, 2.7e-06, 5.1e-06, 5.6e-06, 1.1e-05]
+c=[1.07e-05, 1.32e-05, 1.34e-05, 2.17e-05, 0.0001244, 0.0011914, 0.0035546, 0.0118273, 0.118138]
+
+
+d=[1.19e-05, 1.08e-05, 1.1e-05, 1.14e-05, 1.36e-05, 5.69e-05, 0.0001521, 0.0004789, 0.0046827]
+
 
 plt.title("Comparison of summation kernels")
 plt.xlabel("N")
 plt.ylabel("Time [s]")
-plt.loglog(N, a,label="Shared Memory")
-plt.loglog(N, b,label="Warp Shuffles")
-plt.loglog(N, c,label="Warp Shuffles with 1 thread per entry")
-plt.loglog(N, d,label="Dot product")
+plt.semilogy(N, a,label="Shared Memory")
+plt.semilogy(N, b,label="Warp Shuffles")
+plt.semilogy(N, c,label="Warp Shuffles with 1 thread per entry")
+plt.semilogy(N, d,label="Dot product")
 plt.grid()
 plt.legend()
 plt.savefig("comp1.jpg")
