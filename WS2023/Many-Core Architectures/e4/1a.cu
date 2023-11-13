@@ -1,8 +1,8 @@
 #include "timer.hpp"
 #include "cuda_errchk.hpp"
-#include <algorithm>
+#include <cuda_runtime.h>
+#include <cmath>
 #include <iostream>
-#include <ostream>
 #include <stdio.h>
 
 // result = (x, y)

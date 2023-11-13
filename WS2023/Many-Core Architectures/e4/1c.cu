@@ -1,6 +1,7 @@
 #include "timer.hpp"
 #include "cuda_errchk.hpp"
-#include <algorithm>
+#include <cuda_runtime.h>
+#include <cmath>
 #include <iostream>
 #include <stdio.h>
 
@@ -19,14 +20,14 @@ __global__ void task1_a(int N, double *x, double *result)
         if (x[i] == 0) nn0 += 1;
     }
 
-    for (int i=16; i>0; i=i/2) {
+    for (int i=warpSize/2; i>0; i=i/2) {
         sum += __shfl_xor_sync(0xffffffff, sum, i);
         absum += __shfl_xor_sync(0xffffffff, absum, i);
         sqsum += __shfl_xor_sync(0xffffffff, sqsum, i);
         nn0 += __shfl_xor_sync(0xffffffff, nn0, i);
     }
 
-    if (threadIdx.x % 32 == 0) {
+    if (threadIdx.x % warpSize == 0) {
         atomicAdd(&result[0], sum);
         atomicAdd(&result[1], absum);
         atomicAdd(&result[2], sqsum);
