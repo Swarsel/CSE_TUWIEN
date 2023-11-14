@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
+# fix default matplotlib in nix trying to use qt when another library using qt is installed
+from matplotlib import use as matplotlib_use
+matplotlib_use("TkAgg")
 
 n=[64, 128, 256, 512, 1024, 2048, 4096]
 b=[2.84939, 7.71012, 9.70904, 17.3318, 32.768, 55.7383, 71.621]

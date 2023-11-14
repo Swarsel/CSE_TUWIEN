@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
+# fix default matplotlib in nix trying to use qt when another library using qt is installed
+from matplotlib import use as matplotlib_use
+matplotlib_use("TkAgg")
 
 n1=list(range(64))
 n2=list(range(1,64))
