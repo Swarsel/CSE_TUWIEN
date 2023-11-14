@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
+# fix default matplotlib in nix trying to use qt when another library using qt is installed
+from matplotlib import use as matplotlib_use
+matplotlib_use("TkAgg")
 
 N = [100, 300, 1000, 10000, 100000, 1000000, 3000000, 10000000, 100000000];
 

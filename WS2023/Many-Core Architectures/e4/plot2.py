@@ -1,5 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
+# fix default matplotlib in nix trying to use qt when another library using qt is installed
+from matplotlib import use as matplotlib_use
+matplotlib_use("TkAgg")
+
 # own kernel data
 aa=[4.07e-05,5.56e-05,0.0002437,0.0021272]
 bb=[7.32e-05,0.000106,0.0004825,0.0042479]
