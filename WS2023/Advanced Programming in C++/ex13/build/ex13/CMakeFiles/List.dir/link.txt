@@ -1,0 +1,1 @@
+/nix/store/7wkshj58fcsl1f3zyi67qsxgl1p8nki1-gcc-wrapper-12.2.0/bin/g++ -fPIC -O3 -DNDEBUG -shared -Wl,-soname,libList.so -o libList.so CMakeFiles/List.dir/List.cpp.o  -lm 
