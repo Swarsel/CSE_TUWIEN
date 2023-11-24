@@ -1,24 +1,21 @@
 #include "timer.hpp"
 #include "cuda_errchk.hpp"
 #include <cuda_runtime_api.h>
+#include <sm_60_atomic_functions.hpp>
 #include <stdio.h>
 #include <iostream>
 
 __global__
-void copyKernel(int N, double *src, double *dest){
-    unsigned int total_threads = blockDim.x * gridDim.x;
-    int thread_id = blockIdx.x*blockDim.x + threadIdx.x;
-    for (unsigned int i = thread_id; i<N; i += total_threads) {
-        if(thread_id < N) {dest[i] = src[i];}
+void copyKernel(double *dest){
+    for (unsigned int i = 0; i<100000; i ++) {
+        atomicAdd(dest,1);
     }
 }
 
 __global__
 void refKernel(int N, double *src, double *dest){
-    unsigned int total_threads = blockDim.x * gridDim.x;
-    int thread_id = blockIdx.x*blockDim.x + threadIdx.x;
-    for (unsigned int i = thread_id; i<N; i += total_threads) {
-        if(thread_id < N) {;}
+    for (unsigned int i = 0; i<100000; i ++) {
+        ;
     }
 }
 
@@ -31,9 +28,8 @@ int main(int argc, char *argv[]) {
     double *x, *y, *cuda_x, *cuda_y;
 
     x = (double*)malloc(sizeof(double) * N);
-    y = (double*)malloc(sizeof(double) * N);
     cudaMalloc(&cuda_x, sizeof(double) * N);
-    cudaMalloc(&cuda_y, sizeof(double) * N);
+    cudaMalloc(&cuda_y, sizeof(double));
 
     for ( int i = 0; i < N ; i++) {
         // i know it is bad practise to use rand(), but the numbers do not really need to be random here

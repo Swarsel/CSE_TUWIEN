@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Wrapper script to send a CUDA source file to the remote exercise environment and retrieve the results.
 
@@ -30,32 +30,43 @@
 import requests
 import sys
 
-#url = 'https://k40.360252.org/2022/ex5/run.php'
+#url = 'https://k40.360252.org/2022/ex4/run.php'
 url = 'https://rtx3060.360252.org/2023/ex5/run.php'
 
 
 # Check whether a source file has been passed:
-if len(sys.argv) < 2:
-  print("ERROR: No source file specified")
-  sys.exit()
+# if len(sys.argv) < 2:
+#   print("ERROR: No source file specified")
+#   sys.exit()
 
 # Read source file contents:
-try:
-  src_file = open(sys.argv[1], "r")
-except FileNotFoundError:
-  print('ERROR: Source file does not exist!')
-  sys.exit()
-sources = src_file.read()
+# try:
+#   src_file = open(sys.argv[1], "r")
+# except FileNotFoundError:
+#   print('ERROR: Source file does not exist!')
+#   sys.exit()
+# sources = src_file.read()
 
 
 # Set up JSON object to hold the respective fields, then send to the server and print the returned output (strip HTML tags, don't repeat the source code)
-myobj = {'src': sources,
+myobj = {'src': "",
          'userargs': ' '.join(sys.argv[2:]),
          'grind': 'none',   # Possible values: none, valgrind, valgrindfull, memcheck, racecheck, synccheck, initcheck
          'profiler': 'none'} # Possible values: none, nvprof
 
-response = requests.post(url, data = myobj)
+fln = "1b.cu"
+time = 0
+its = 10
+for it in range(its):
+    myobj['src'] = open(fln, "r").read()
+    response = requests.post(url, data = myobj)
+    add = response.text.split("pre")[5].replace("<","").replace("/","").replace(">","").replace("\n","")
+    print(f"{it}. run time {add}")
+    time += float(add)
 
-print("POSTing request to " + url + "\n")
-# print(response.text.split("</pre><h1>")[1].replace("<h1>","").replace("</h1>","").replace("<pre>","").replace("</pre>","").replace("<br />","\n").replace("</html>",""))
-print(response.text)
+print()
+total_time = time / its
+print(total_time)
+
+with open(f"data/{fln}", "w+") as fil:
+  fil.write(str(total_time))
