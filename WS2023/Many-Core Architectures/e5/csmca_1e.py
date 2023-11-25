@@ -54,7 +54,7 @@ url = 'https://rtx3060.360252.org/2023/ex5/run.php'
 
 
 # Set up JSON object to hold the respective fields, then send to the server and print the returned output (strip HTML tags, don't repeat the source code)
-fln = "1d.cu"
+fln = "1e.cu"
 myobj = {'src': open(fln, "r").read(),
          'userargs': ' '.join(sys.argv[2:]),
          'grind': 'none',   # Possible values: none, valgrind, valgrindfull, memcheck, racecheck, synccheck, initcheck
@@ -75,7 +75,7 @@ for bl in sizes:
     for th in sizes:
 
          time = []
-         worked = bl * th * it1d
+         worked = 100000000 * 2
          for it in range(its):
              myobj['userargs'] = f"{bl} {th}"
              response = requests.post(url, data = myobj)
@@ -98,17 +98,17 @@ for bl in sizes:
          print(f"time: {total_time}, ",end="")
          times.append(total_time)
 
-         persec = worked / total_time
+         persec = worked / total_time / 1e9
          totals.append((bl, th, persec))
 
          # 8: sizeof(double)
-         print(f"persec: {persec}, ")
+         print(f"FlOPs: {persec}, ")
          persecs.append(persec)
 
 with open(f"data/{fln}_rawtimes", "w+") as fil:
     for nt in times:
         fil.write(str(nt))
-with open(f"data/{fln}_persecs", "w+") as fil:
+with open(f"data/{fln}_flopss", "w+") as fil:
     for nt in persecs:
         fil.write(str(nt))
 with open(f"data/{fln}_totals", "w+") as fil:
@@ -142,7 +142,7 @@ for i in range(len(xx)):
         text = ax.text(j, i, np.format_float_scientific(go[i][j],precision=5),
                        ha="center", va="center", color="w")
 
-ax.set_title("Searching for max atomicAdd/s, it=1000")
+ax.set_title("Searching for max GFlOPs/s")
 fig.tight_layout()
 plt.colorbar(im)
 plt.savefig(f"plots/{fln}_aaplt.png")

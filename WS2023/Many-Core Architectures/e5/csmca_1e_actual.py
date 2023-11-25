@@ -28,8 +28,6 @@
 import matplotlib.pyplot as plt
 import requests
 import sys
-import numpy as np
-
 # fix default matplotlib in nix trying to use qt when another library using qt is installed
 from matplotlib import use as matplotlib_use
 matplotlib_use("TkAgg")
@@ -54,96 +52,73 @@ url = 'https://rtx3060.360252.org/2023/ex5/run.php'
 
 
 # Set up JSON object to hold the respective fields, then send to the server and print the returned output (strip HTML tags, don't repeat the source code)
-fln = "1d.cu"
+fln = "1e.cu"
 myobj = {'src': open(fln, "r").read(),
          'userargs': ' '.join(sys.argv[2:]),
          'grind': 'none',   # Possible values: none, valgrind, valgrindfull, memcheck, racecheck, synccheck, initcheck
          'profiler': 'none'} # Possible values: none, nvprof
 
-# mat4 = []
 times = []
-# times2 = []
-# ttimes = []
-persecs = []
-totals =[]
-# bws = []
-it1d = 1000
-its = 10 # this takes too long otherwise
-sizes = [2 ** p for p in range(8,11)]
-# go = np.array([sizes[0:1], sizes[1:2], sizes[2:3]])
-for bl in sizes:
-    for th in sizes:
+times2 = []
+flops = []
+ttimes = []
+bws = []
+its = 14
+Ns = [100,1000,10000,100000,300000]
+for N in Ns:
+    time = []
+    time2 = []
+    for it in range(its):
+        myobj['userargs'] = str(N)
+        response = requests.post(url, data = myobj)
+        add = response.text.split("pre")[5].replace("<","").replace("/","").replace(">","").replace("\n","")
+        # print(f"{it}. run time {add[:-1]}")
+        out = add.split()
+        time.append(float(out[0]))
+        time2.append(float(out[1]))
 
-         time = []
-         worked = bl * th * it1d
-         for it in range(its):
-             myobj['userargs'] = f"{bl} {th}"
-             response = requests.post(url, data = myobj)
-             add = response.text.split("pre")[5].replace("<","").replace("/","").replace(">","").replace("\n","")
-             # print(f"{it}. run time {add[:-1]}")
-             out = add.split()
-             #print(out[0])
-             time.append(float(out[0]))
 
-         print(f"bl=: {bl}; ", end="")
-         print(f"th=: {th}; ", end="")
-         #i noticed sporadic high execution times, possibly because many other people are using the machine
-         # hence i decided to use the average with some of the highest and lowest times omitted
-         time.sort()
-         times_kept = time[2:-2]
-         total_time = 0
-         for t in times_kept:
-             total_time += t
-         total_time /= len(times_kept)
-         print(f"time: {total_time}, ",end="")
-         times.append(total_time)
+    print(f"N=: {N}; ", end="")
+    #i noticed sporadic high execution times, possibly because many other people are using the machine
+    # hence i decided to use the average with some of the highest and lowest times omitted
+    time.sort()
+    times_kept = time[2:-2]
+    total_time = 0
+    for t in times_kept:
+        total_time += t
+    total_time /= len(times_kept)
+    print(f"time: {total_time}, ",end="")
+    times.append(total_time)
 
-         persec = worked / total_time
-         totals.append((bl, th, persec))
+    time2.sort()
+    times_kept2 = time2[2:-2]
+    total_time2 = 0
+    for t in times_kept2:
+        total_time2 += t
+    total_time2 /= len(times_kept2)
+    print(f"time_ref: {total_time2}, ",end="")
+    times2.append(total_time2)
 
-         # 8: sizeof(double)
-         print(f"persec: {persec}, ")
-         persecs.append(persec)
+    ttime = total_time - total_time2
+    ttimes.append(ttime)
+
+    flop = 1000*4096*1024*2/ttime/1e9
+    flops.append(flop)
+
+    print(f"flp: {flop}, ")
+
 
 with open(f"data/{fln}_rawtimes", "w+") as fil:
     for nt in times:
         fil.write(str(nt))
-with open(f"data/{fln}_persecs", "w+") as fil:
-    for nt in persecs:
+with open(f"data/{fln}_flops", "w+") as fil:
+    for nt in flops:
         fil.write(str(nt))
-with open(f"data/{fln}_totals", "w+") as fil:
-    for nt in totals:
-        fil.write(str(nt))
-# with open(f"data/{fln}_bws", "w+") as fil:
-#     for nb in bws:
-#         fil.write(str(nb))
 
-
-elem = len(sizes)
-go = np.array([persecs[0:elem], persecs[elem:elem*2], persecs[elem*2:elem*3]])
-
-xx = [256,512,1024]
-yy = [256,512,1024]
-
-fig, ax = plt.subplots()
-im = ax.imshow(go)
-
-# Show all ticks and label them with the respective list entries
-ax.set_xticks(np.arange(len(yy)), labels=yy)
-ax.set_yticks(np.arange(len(xx)), labels=xx)
-
-# Rotate the tick labels and set their alignment.
-plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
-         rotation_mode="anchor")
-
-# Loop over data dimensions and create text annotations.
-for i in range(len(xx)):
-    for j in range(len(yy)):
-        text = ax.text(j, i, np.format_float_scientific(go[i][j],precision=5),
-                       ha="center", va="center", color="w")
-
-ax.set_title("Searching for max atomicAdd/s, it=1000")
-fig.tight_layout()
-plt.colorbar(im)
-plt.savefig(f"plots/{fln}_aaplt.png")
+plt.loglog(Ns, flops)
+plt.title("Measuring peak GFlOPs/s for RTX3060")
+plt.xlabel("N")
+plt.ylabel("FlOPs/s")
+plt.grid()
+plt.savefig(f"plots/{fln}_flpplt.png")
 plt.show()
