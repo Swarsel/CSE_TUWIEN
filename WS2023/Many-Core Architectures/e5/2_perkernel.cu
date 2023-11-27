@@ -102,8 +102,10 @@ void conjugate_gradient(size_t N,  // number of unknows
     //    cudaMemset(&cuda_rr, 0, 1);
     rr = 0;
     cudaMemcpy(cuda_rr, &rr, sizeof(double), cudaMemcpyHostToDevice);
+    timer.reset();
     dot<<<256, 256>>>(N, cuda_r, cuda_r, cuda_rr);
-    // cudaDeviceSynchronize();
+    cudaDeviceSynchronize();
+    time3 = timer.get();
     cudaMemcpy(&rr, cuda_rr, sizeof(double), cudaMemcpyDeviceToHost);
     // std::cout << rr << std::endl;
 
@@ -112,16 +114,20 @@ void conjugate_gradient(size_t N,  // number of unknows
 
         // line 4: A*p:
         // cudaMemset(cuda_Ap, 0, N);
+        timer.reset();
         csr_matvec_product<<<256, 256>>>(N, cuda_csr_rowoffsets, cuda_csr_colindices,
                                                    cuda_csr_values, cuda_p, cuda_Ap);
-        // cudaDeviceSynchronize();
+        cudaDeviceSynchronize();
+        time1 = timer.get();
 
         pAp = 0;
         cudaMemcpy(cuda_pAp, &pAp, sizeof(double), cudaMemcpyHostToDevice);
 
         //        cudaMemset(&cuda_pAp, 0, 1);
+        timer.reset();
         dot<<<256, 256>>>(N, cuda_p, cuda_Ap, cuda_pAp);
-        // cudaDeviceSynchronize();
+        cudaDeviceSynchronize();
+        time2 = timer.get();
         cudaMemcpy(&pAp, cuda_pAp, sizeof(double), cudaMemcpyDeviceToHost);
 
 
@@ -130,28 +136,36 @@ void conjugate_gradient(size_t N,  // number of unknows
         // if (iters != 0) rr = rprp;
         alpha = rr / pAp;
 
+        timer.reset();
         vecIterate<<<256, 256>>>(N, cuda_solution, cuda_solution, cuda_p, alpha);
-        // cudaDeviceSynchronize();
+        cudaDeviceSynchronize();
+        time4 = timer.get();
 
+        timer.reset();
         vecIterate<<<256, 256>>>(N, cuda_r, cuda_r, cuda_Ap, -1 * alpha);
-        // cudaDeviceSynchronize();
+        cudaDeviceSynchronize();
+        time5 = timer.get();
 
         rr_prev = rr;
         rr = 0;
         cudaMemcpy(cuda_rr, &rr, sizeof(double), cudaMemcpyHostToDevice);
 
+        timer.reset();
         dot<<<256, 256>>>(N, cuda_r, cuda_r, cuda_rr);
-        // cudaDeviceSynchronize();
+        cudaDeviceSynchronize();
+        time6 = timer.get();
         cudaMemcpy(&rr, cuda_rr, sizeof(double), cudaMemcpyDeviceToHost);
 
         // std::cout << rprp << std::endl;
 
-        if (rr < 1e-8) break;
+        if (rr < 1e-16) break;
 
         beta = rr / rr_prev;
 
+        timer.reset();
         vecIterate<<<256, 256>>>(N, cuda_p, cuda_r, cuda_p, beta);
         cudaDeviceSynchronize();
+        time7 = timer.get();
 
         if (iters > 10000) break;  // solver didn't converge
         ++iters;
@@ -161,6 +175,14 @@ void conjugate_gradient(size_t N,  // number of unknows
     cudaMemcpy(r, cuda_r, sizeof(double) * N, cudaMemcpyDeviceToHost);
     cudaMemcpy(solution, cuda_solution, N * sizeof(double), cudaMemcpyDeviceToHost);
 
+    if (iters > 10000)
+        ;
+        //std::cout << "Conjugate Gradient did NOT converge within 10000 iterations" << std::endl;
+    else {
+        //std::cout << "Conjugate Gradient converged in " << iters << " iterations." << std::endl;
+    // std::cout << "vecmat" << " " << "dot" << " " << "dot" << " " << "it" << " " << "it" << " " << "dot" << " " << "it" << std::endl;
+    std::cout << time1 << " " << time2 << " " << time3 << " " << time4 << " " << time5 << " " << time6 << " " << time7 << std::endl;
+    }
 
     free(p);
     free(r);
@@ -228,11 +250,7 @@ void solve_system(size_t points_per_direction) {
 
 int main(int argc, char *argv[]) {
 
-    Timer timer;
-    double time;
-    timer.reset();
     solve_system(std::atoi(argv[1])); // solves a system with 100*100 unknowns
-    time = timer.get();
-    std::cout << time;
+
     return EXIT_SUCCESS;
 }

@@ -54,18 +54,25 @@ myobj = {'src': "",
          'grind': 'none',   # Possible values: none, valgrind, valgrindfull, memcheck, racecheck, synccheck, initcheck
          'profiler': 'none'} # Possible values: none, nvprof
 
-time = 0
-its = 10
+times = []
+its = 100
 for it in range(its):
     myobj['src'] = open("1a.cu", "r").read()
     response = requests.post(url, data = myobj)
     add = response.text.split("pre")[5].replace("<","").replace("/","").replace(">","").replace("\n","")
     print(f"{it}. run time {add}")
-    time += float(add)
+    times.append(float(add))
 
 print()
-total_time = time / its
+times.sort()
+times_kept = times[10:-10]
+total_time = 0
+for t in times_kept:
+    total_time += t
+total_time = total_time / len(times_kept)
 print(total_time)
+print(f"{total_time * 1e6} microseconds")
+
 
 with open("data/1a.csv", "w+") as fil:
   fil.write(str(total_time))

@@ -8,7 +8,7 @@
 
 /** Computes y = A*x for a sparse matrix A in CSR format and vector x,y  */
 __global__
-void csr_matvec_product(int N, int *rowoffsets, int *colindices, double *values, double *x, double *y) {
+void csr_matvec_product(int N, int *rowoffsets, int *colindices, const double *values, double *x, double *y) {
     for (int row = blockDim.x * blockIdx.x + threadIdx.x; row < N; row += gridDim.x * blockDim.x) {
         double val = 0;
         for (int jj = rowoffsets[row]; jj < rowoffsets[row+1]; ++jj) {
@@ -21,8 +21,9 @@ void csr_matvec_product(int N, int *rowoffsets, int *colindices, double *values,
 
 __global__ void dot(int N, double *x, double *y, double *results) {
     double alpha1{0};
-
-    for(int j = blockIdx.x * blockDim.x + threadIdx.x; j < N; j += blockDim.x*gridDim.x) {
+    unsigned int thread_id = blockIdx.x * blockDim.x + threadIdx.x;
+    if (thread_id == 0) *results = 0;
+    for(int j = thread_id; j < N; j += blockDim.x*gridDim.x) {
         alpha1 += x[j] * y[j];
     }
 
@@ -36,18 +37,10 @@ __global__ void dot(int N, double *x, double *y, double *results) {
 }
 
 __global__
-void vecIterate(int N, double *out, double *in1, double *in2, double mod, int plus)
-{
-    if (plus == 1) {
+void vecIterate(int N, double *out, double *in1, double *in2, double mod) {
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x) {
             out[i] = in1[i] + mod * in2[i];
         }
-    }
-    else {
-        for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x) {
-            out[i] = in1[i] - mod * in2[i];
-        }
-    }
 }
 
 /** Implementation of the conjugate gradient algorithm.
@@ -59,7 +52,7 @@ void vecIterate(int N, double *out, double *in1, double *in2, double mod, int pl
  *  Modify as you see fit.
  */
 void conjugate_gradient(size_t N,  // number of unknows
-                        int *cuda_csr_rowoffsets, int *cuda_csr_colindices, double *cuda_csr_values,
+                        int *csr_rowoffsets, int *csr_colindices, double *csr_values,
                         double *rhs,
                         double *solution)
 //, double *init_guess)   // feel free to add a nonzero initial guess as needed
@@ -87,84 +80,73 @@ void conjugate_gradient(size_t N,  // number of unknows
     std::copy(rhs, rhs+N, r);
 
     // initialize variables for GPU
-    double *cuda_p, *cuda_r, *cuda_Ap, *cuda_pAp, *cuda_rr, *cuda_x, *cuda_rprp;
+    int *cuda_csr_rowoffsets, *cuda_csr_colindices;
+        double *cuda_csr_values, *cuda_p, *cuda_r, *cuda_Ap, *cuda_pAp, *cuda_rr, *cuda_solution, *cuda_rprp;
+    cudaMalloc(&cuda_csr_rowoffsets, sizeof(int) * (N + 1));
+    cudaMalloc(&cuda_csr_colindices, sizeof(int) * 5 * N);
+    cudaMalloc(&cuda_csr_values, sizeof(double) * 5 * N);
     cudaMalloc(&cuda_p, sizeof(double) * N);
     cudaMalloc(&cuda_r, sizeof(double) * N);
     cudaMalloc(&cuda_Ap, sizeof(double) * N);
     cudaMalloc(&cuda_pAp, sizeof(double) * 1);
     cudaMalloc(&cuda_rr, sizeof(double) * 1);
-    cudaMalloc(&cuda_x, sizeof(double) * N);
+    cudaMalloc(&cuda_solution, sizeof(double) * N);
     // cudaMalloc(&cuda_rprp, sizeof(double) * 1);
 
+    cudaMemcpy(cuda_csr_rowoffsets, csr_rowoffsets, sizeof(int) * (N + 1), cudaMemcpyHostToDevice);
+    cudaMemcpy(cuda_csr_colindices, csr_colindices, sizeof(int) * 5 * N, cudaMemcpyHostToDevice);
+    cudaMemcpy(cuda_csr_values, csr_values, sizeof(double) * 5 * N, cudaMemcpyHostToDevice);
     cudaMemcpy(cuda_p, p, sizeof(double) * N, cudaMemcpyHostToDevice);
     cudaMemcpy(cuda_r, r, sizeof(double) * N, cudaMemcpyHostToDevice);
-    cudaMemcpy(cuda_x, solution, sizeof(double) * N, cudaMemcpyHostToDevice);
+    cudaMemcpy(cuda_solution, solution, sizeof(double) * N, cudaMemcpyHostToDevice);
 
+
+    //    cudaMemset(&cuda_rr, 0, 1);
+    dot<<<256,256>>>(N, cuda_r, cuda_r, cuda_rr);
+    // cudaDeviceSynchronize();
+    cudaMemcpy(&rr, cuda_rr, sizeof(double), cudaMemcpyDeviceToHost);
+    // std::cout << rr << std::endl;
 
     int iters = 0;
     while (1) {
 
         // line 4: A*p:
-        cudaMemset(cuda_Ap, 0, N);
-        timer.reset();
+        // cudaMemset(cuda_Ap, 0, N);
         csr_matvec_product<<<256, 256>>>(N, cuda_csr_rowoffsets, cuda_csr_colindices,
                                                    cuda_csr_values, cuda_p, cuda_Ap);
-        cudaDeviceSynchronize();
-        time1 = timer.get();
+        // cudaDeviceSynchronize();
 
-        cudaMemset(cuda_pAp, 0, 1);
-        timer.reset();
+
+        //        cudaMemset(&cuda_pAp, 0, 1);
         dot<<<256, 256>>>(N, cuda_p, cuda_Ap, cuda_pAp);
-        cudaDeviceSynchronize();
-        time2 = timer.get();
+        // cudaDeviceSynchronize();
         cudaMemcpy(&pAp, cuda_pAp, sizeof(double), cudaMemcpyDeviceToHost);
 
-        cudaMemset(cuda_rr, 0, 1);
-        timer.reset();
-        dot<<<256, 256>>>(N, cuda_r, cuda_r, cuda_rr);
-        cudaDeviceSynchronize();
-        time3 = timer.get();
-        cudaMemcpy(&rr, cuda_rr, sizeof(double), cudaMemcpyDeviceToHost);
-        // std::cout << rr << std::endl;
 
         // std::cout << pAp << std::endl;
 
         // if (iters != 0) rr = rprp;
         alpha = rr / pAp;
 
-        timer.reset();
-        vecIterate<<<256, 256>>>(N, cuda_x, cuda_x, cuda_p, alpha, 1);
-        cudaDeviceSynchronize();
-        time4 = timer.get();
+        vecIterate<<<256, 256>>>(N, cuda_solution, cuda_solution, cuda_p, alpha);
+        // cudaDeviceSynchronize();
 
-        timer.reset();
-        vecIterate<<<256, 256>>>(N, cuda_r, cuda_r, cuda_Ap, alpha, 0);
-        cudaDeviceSynchronize();
-        time5 = timer.get();
+        vecIterate<<<256, 256>>>(N, cuda_r, cuda_r, cuda_Ap, -1 * alpha);
+        // cudaDeviceSynchronize();
 
         rr_prev = rr;
-        rr = 0;
-        cudaMemcpy(cuda_rr, &rr, sizeof(double), cudaMemcpyHostToDevice);
-
-        timer.reset();
         dot<<<256, 256>>>(N, cuda_r, cuda_r, cuda_rr);
-        cudaDeviceSynchronize();
-        time6 = timer.get();
+        // cudaDeviceSynchronize();
         cudaMemcpy(&rr, cuda_rr, sizeof(double), cudaMemcpyDeviceToHost);
 
         // std::cout << rprp << std::endl;
 
-        if (rr < 1e-6) {
-            cudaMemcpy(solution, cuda_x, N * sizeof(double), cudaMemcpyDeviceToHost);
-            break;
-        }
+        if (rr < 1e-8) break;
 
         beta = rr / rr_prev;
 
-        timer.reset();
-        vecIterate<<<256, 256>>>(N, cuda_p, cuda_r, cuda_p, beta, 1);
+        vecIterate<<<256, 256>>>(N, cuda_p, cuda_r, cuda_p, beta);
         cudaDeviceSynchronize();
-        time7 = timer.get();
 
         if (iters > 10000) break;  // solver didn't converge
         ++iters;
@@ -172,19 +154,19 @@ void conjugate_gradient(size_t N,  // number of unknows
 
     cudaMemcpy(p, cuda_p, N * sizeof(double), cudaMemcpyDeviceToHost);
     cudaMemcpy(r, cuda_r, sizeof(double) * N, cudaMemcpyDeviceToHost);
+    cudaMemcpy(solution, cuda_solution, N * sizeof(double), cudaMemcpyDeviceToHost);
 
-    if (iters > 10000)
-        std::cout << "Conjugate Gradient did NOT converge within 10000 iterations" << std::endl;
-    else
-        std::cout << "Conjugate Gradient converged in " << iters << " iterations." << std::endl;
 
     free(p);
     free(r);
     free(Ap);
+    cudaFree(cuda_csr_rowoffsets);
+    cudaFree(cuda_csr_colindices);
+    cudaFree(cuda_csr_values);
     cudaFree(cuda_p);
     cudaFree(cuda_r);
     cudaFree(cuda_Ap);
-    cudaFree(cuda_x);
+    cudaFree(cuda_solution);
 
 }
 
@@ -195,7 +177,7 @@ void solve_system(size_t points_per_direction) {
 
     size_t N = points_per_direction * points_per_direction; // number of unknows to solve for
 
-    std::cout << "Solving Ax=b with " << N << " unknowns." << std::endl;
+    //std::cout << "Solving Ax=b with " << N << " unknowns." << std::endl;
 
     //
     // Allocate CSR arrays.
@@ -219,44 +201,33 @@ void solve_system(size_t points_per_direction) {
     double *rhs      = (double*)malloc(sizeof(double) * N);
     std::fill(rhs, rhs + N, 1);
 
-    // GPU
-    int *cuda_csr_rowoffsets, *cuda_csr_colindices;
-    double *cuda_csr_values;
-
-    cudaMalloc(&cuda_csr_rowoffsets, sizeof(double) * (N + 1));
-    cudaMalloc(&cuda_csr_colindices, sizeof(double) * 5 * N);
-    cudaMalloc(&cuda_csr_values, sizeof(double) * 5 * N);
-    cudaMemcpy(cuda_csr_rowoffsets, csr_rowoffsets, sizeof(double) * (N + 1), cudaMemcpyHostToDevice);
-    cudaMemcpy(cuda_csr_colindices, csr_colindices, sizeof(double) * 5 * N, cudaMemcpyHostToDevice);
-    cudaMemcpy(cuda_csr_values, csr_values, sizeof(double) * 5 * N, cudaMemcpyHostToDevice);
-
-
     //
     // Call Conjugate Gradient implementation (CPU arrays passed here; modify to use GPU arrays)
     //
-    conjugate_gradient(N, cuda_csr_rowoffsets, cuda_csr_colindices, cuda_csr_values, rhs, solution);
+    conjugate_gradient(N, csr_rowoffsets, csr_colindices, csr_values, rhs, solution);
 
     //
     // Check for convergence:
     //
     double residual_norm = relative_residual(N, csr_rowoffsets, csr_colindices, csr_values, rhs, solution);
-    std::cout << "Relative residual norm: " << residual_norm << " (should be smaller than 1e-6)" << std::endl;
+    //std::cout << "Relative residual norm: " << residual_norm << " (should be smaller than 1e-6)" << std::endl;
 
     free(solution);
     free(rhs);
     free(csr_rowoffsets);
     free(csr_colindices);
     free(csr_values);
-    cudaFree(cuda_csr_rowoffsets);
-    cudaFree(cuda_csr_colindices);
-    cudaFree(cuda_csr_values);
 
 }
 
 
-int main() {
+int main(int argc, char *argv[]) {
 
-    solve_system(100); // solves a system with 100*100 unknowns
-
+    Timer timer;
+    double time;
+    timer.reset();
+    solve_system(std::atoi(argv[1])); // solves a system with 100*100 unknowns
+    time = timer.get();
+    std::cout << time;
     return EXIT_SUCCESS;
 }

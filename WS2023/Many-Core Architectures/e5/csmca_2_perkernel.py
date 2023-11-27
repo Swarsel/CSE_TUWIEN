@@ -52,7 +52,7 @@ url = 'https://rtx3060.360252.org/2023/ex5/run.php'
 
 
 # Set up JSON object to hold the respective fields, then send to the server and print the returned output (strip HTML tags, don't repeat the source code)
-fln = "1e.cu"
+fln = "2_perkernel.cu"
 myobj = {'src': open(fln, "r").read(),
          'userargs': ' '.join(sys.argv[2:]),
          'grind': 'none',   # Possible values: none, valgrind, valgrindfull, memcheck, racecheck, synccheck, initcheck
@@ -60,23 +60,38 @@ myobj = {'src': open(fln, "r").read(),
 
 times = []
 times2 = []
-flops = []
-ttimes = []
+times3 = []
+times4 = []
+times5 = []
+times6 = []
+times7 = []
+# ttimes = []
 bws = []
-its = 14
-Ns = [100,1000,10000,100000,300000]
+its = 7 # it just takes too long otherwise
+Ns = [10,100,1000,2000]
 for N in Ns:
+    print()
     time = []
     time2 = []
+    time3 = []
+    time4 = []
+    time5 = []
+    time6 = []
+    time7 = []
     for it in range(its):
         myobj['userargs'] = str(N)
         response = requests.post(url, data = myobj)
-        add = response.text.split("pre")[5].replace("<","").replace("/","").replace(">","").replace("\n","")
+        add = response.text.split("pre")[8].replace("<","").replace("/","").replace(">","").replace("\n","")
         # print(f"{it}. run time {add[:-1]}")
+        print(add)
         out = add.split()
         time.append(float(out[0]))
         time2.append(float(out[1]))
-
+        time3.append(float(out[2]))
+        time4.append(float(out[3]))
+        time5.append(float(out[4]))
+        time6.append(float(out[5]))
+        time7.append(float(out[6]))
 
     print(f"N=: {N}; ", end="")
     #i noticed sporadic high execution times, possibly because many other people are using the machine
@@ -96,29 +111,107 @@ for N in Ns:
     for t in times_kept2:
         total_time2 += t
     total_time2 /= len(times_kept2)
-    print(f"time_ref: {total_time2}, ",end="")
+    print(f"time2: {total_time2}, ",end="")
     times2.append(total_time2)
 
-    ttime = total_time - total_time2
-    ttimes.append(ttime)
+    time3.sort()
+    times_kept3 = time3[2:-2]
+    total_time3 = 0
+    for t in times_kept3:
+        total_time3 += t
+    total_time3 /= len(times_kept3)
+    print(f"time3: {total_time3}, ",end="")
+    times3.append(total_time3)
 
-    flop = 1000*4096*1024*2/ttime/1e9
-    flops.append(flop)
+    time4.sort()
+    times_kept4 = time4[2:-2]
+    total_time4 = 0
+    for t in times_kept4:
+        total_time4 += t
+    total_time4 /= len(times_kept4)
+    print(f"time4: {total_time4}, ",end="")
+    times4.append(total_time4)
 
-    print(f"flp: {flop}, ")
+    time5.sort()
+    times_kept5 = time5[2:-2]
+    total_time5 = 0
+    for t in times_kept5:
+        total_time5 += t
+    total_time5 /= len(times_kept5)
+    print(f"time5: {total_time5}, ",end="")
+    times5.append(total_time5)
 
+    time6.sort()
+    times_kept6 = time6[2:-2]
+    total_time6 = 0
+    for t in times_kept6:
+        total_time6 += t
+    total_time6 /= len(times_kept6)
+    print(f"time6: {total_time6}, ",end="")
+    times6.append(total_time6)
+
+    time7.sort()
+    times_kept7 = time7[2:-2]
+    total_time7 = 0
+    for t in times_kept7:
+        total_time7 += t
+    total_time7 /= len(times_kept7)
+    print(f"time7: {total_time7}, ",end="")
+    times7.append(total_time7)
+    # ttime = total_time - total_time2
+    # ttimes.append(ttime)
+
+    # 8: sizeof(double)
+    # bw = 8 * 2 * N / ttime / 1e9;
+    # print(f"bw: {bw}, ")
+    # bws.append(bw)
 
 with open(f"data/{fln}_rawtimes", "w+") as fil:
     for nt in times:
         fil.write(str(nt))
-with open(f"data/{fln}_flops", "w+") as fil:
-    for nt in flops:
+
+with open(f"data/{fln}_rawtimes2", "w+") as fil:
+    for nt in times2:
         fil.write(str(nt))
 
-plt.loglog(Ns, flops)
-plt.title("Measuring peak GFlOPs/s for RTX3060")
-plt.xlabel("N")
-plt.ylabel("FlOPs/s")
+with open(f"data/{fln}_rawtimes3", "w+") as fil:
+    for nt in times3:
+        fil.write(str(nt))
+
+with open(f"data/{fln}_rawtimes4", "w+") as fil:
+    for nt in times4:
+        fil.write(str(nt))
+
+with open(f"data/{fln}_rawtimes5", "w+") as fil:
+    for nt in times5:
+        fil.write(str(nt))
+
+with open(f"data/{fln}_rawtimes6", "w+") as fil:
+    for nt in times6:
+        fil.write(str(nt))
+
+with open(f"data/{fln}_rawtimes7", "w+") as fil:
+    for nt in times7:
+        fil.write(str(nt))
+
+# with open(f"data/{fln}_ttimes", "w+") as fil:
+#     for nt in ttimes:
+#         fil.write(str(nt))
+# with open(f"data/{fln}_bws", "w+") as fil:
+#     for nb in bws:
+#         fil.write(str(nb))
+
+plt.loglog(Ns, times, label="vecmat")
+plt.loglog(Ns, times2, label="dot1")
+plt.loglog(Ns, times3, label="dot2")
+plt.loglog(Ns, times4, label="it1")
+plt.loglog(Ns, times5, label="it2")
+plt.loglog(Ns, times6, label="dot3")
+plt.loglog(Ns, times7, label="it3")
+plt.title("Runtimes of Conjugate Gradient kernels on RTX3060")
+plt.xlabel("$\sqrt{N}$")
+plt.ylabel("time [s]")
 plt.grid()
-plt.savefig(f"plots/{fln}_flpplt.png")
+plt.legend()
+plt.savefig(f"plots/{fln}_timecomp.png")
 plt.show()

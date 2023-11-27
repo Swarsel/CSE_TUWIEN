@@ -52,31 +52,46 @@ url = 'https://rtx3060.360252.org/2023/ex5/run.php'
 
 
 # Set up JSON object to hold the respective fields, then send to the server and print the returned output (strip HTML tags, don't repeat the source code)
-fln = "1e.cu"
+fln = "2.cu"
 myobj = {'src': open(fln, "r").read(),
+         'userargs': ' '.join(sys.argv[2:]),
+         'grind': 'none',   # Possible values: none, valgrind, valgrindfull, memcheck, racecheck, synccheck, initcheck
+         'profiler': 'none'} # Possible values: none, nvprof
+
+fln2 = "skeleton_ref_timed.cpp"
+myobj2 = {'src': open(fln2, "r").read(),
          'userargs': ' '.join(sys.argv[2:]),
          'grind': 'none',   # Possible values: none, valgrind, valgrindfull, memcheck, racecheck, synccheck, initcheck
          'profiler': 'none'} # Possible values: none, nvprof
 
 times = []
 times2 = []
-flops = []
-ttimes = []
+# ttimes = []
 bws = []
-its = 14
-Ns = [100,1000,10000,100000,300000]
-for N in Ns:
+its = 7 # it just takes too long otherwise
+Ns = [10,25,50,75,100,150,200,300,500]
+Ns2 = [10,25,50,75,100,150,200,300,500,750,1000,1500,2000]
+for N in Ns2:
+    print()
     time = []
     time2 = []
     for it in range(its):
         myobj['userargs'] = str(N)
         response = requests.post(url, data = myobj)
-        add = response.text.split("pre")[5].replace("<","").replace("/","").replace(">","").replace("\n","")
+        add = response.text.split("pre")[8].replace("<","").replace("/","").replace(">","").replace("\n","")
         # print(f"{it}. run time {add[:-1]}")
+        print(add)
         out = add.split()
         time.append(float(out[0]))
-        time2.append(float(out[1]))
 
+        if N <= 500:
+            myobj2['userargs'] = str(N)
+            response = requests.post(url, data = myobj2)
+            add = response.text.split("pre")[5].replace("<","").replace("/","").replace(">","").replace("\n","")
+            # print(f"{it}. run time {add[:-1]}")
+            print(add)
+            out = add.split()
+            time2.append(float(out[0]))
 
     print(f"N=: {N}; ", end="")
     #i noticed sporadic high execution times, possibly because many other people are using the machine
@@ -90,35 +105,43 @@ for N in Ns:
     print(f"time: {total_time}, ",end="")
     times.append(total_time)
 
-    time2.sort()
-    times_kept2 = time2[2:-2]
-    total_time2 = 0
-    for t in times_kept2:
-        total_time2 += t
-    total_time2 /= len(times_kept2)
-    print(f"time_ref: {total_time2}, ",end="")
-    times2.append(total_time2)
+    if N <= 500:
+        time2.sort()
+        times_kept2 = time2[2:-2]
+        total_time2 = 0
+        for t in times_kept2:
+            total_time2 += t
+        total_time2 /= len(times_kept2)
+        print(f"time_ref: {total_time2}, ",end="")
+        times2.append(total_time2)
 
-    ttime = total_time - total_time2
-    ttimes.append(ttime)
+    # ttime = total_time - total_time2
+    # ttimes.append(ttime)
 
-    flop = 1000*4096*1024*2/ttime/1e9
-    flops.append(flop)
-
-    print(f"flp: {flop}, ")
-
+    # 8: sizeof(double)
+    # bw = 8 * 2 * N / ttime / 1e9;
+    # print(f"bw: {bw}, ")
+    # bws.append(bw)
 
 with open(f"data/{fln}_rawtimes", "w+") as fil:
     for nt in times:
         fil.write(str(nt))
-with open(f"data/{fln}_flops", "w+") as fil:
-    for nt in flops:
+with open(f"data/{fln}_reftimes", "w+") as fil:
+    for nt in times2:
         fil.write(str(nt))
+# with open(f"data/{fln}_ttimes", "w+") as fil:
+#     for nt in ttimes:
+#         fil.write(str(nt))
+# with open(f"data/{fln}_bws", "w+") as fil:
+#     for nb in bws:
+#         fil.write(str(nb))
 
-plt.loglog(Ns, flops)
-plt.title("Measuring peak GFlOPs/s for RTX3060")
-plt.xlabel("N")
-plt.ylabel("FlOPs/s")
+plt.loglog(Ns2, times, label="GPU")
+plt.loglog(Ns, times2, label="CPU")
+plt.title("Runtimes of Conjugate Gradient on RTX3060 vs CPU")
+plt.xlabel("$\sqrt{N}$")
+plt.ylabel("time [s]")
 plt.grid()
-plt.savefig(f"plots/{fln}_flpplt.png")
+plt.legend()
+plt.savefig(f"plots/{fln}_timecomp.png")
 plt.show()
