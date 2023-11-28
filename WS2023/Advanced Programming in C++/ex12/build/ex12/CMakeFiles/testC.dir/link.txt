@@ -1,0 +1,1 @@
+/nix/store/90h6k8ylkgn81k10190v5c9ldyjpzgl9-gcc-wrapper-12.3.0/bin/g++  -g -fsanitize=address  -fsanitize=address CMakeFiles/testC.dir/Vector.testC.cpp.o -o testC  -Wl,-rpath,/home/swarsel/Documents/GitHub/ex12/build/ex12 -lm libVector.so -lm 

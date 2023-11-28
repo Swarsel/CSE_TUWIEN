@@ -44,11 +44,10 @@ const List::value_type& List::front() const { return _head->value; }
 List::value_type& List::front() { return _head->value; }
 
 /// \todo implement copy constructor
-    List::List(const List& other) : _head(new Node(other._head->value)), _size(1) {
+    List::List(const List& other) : _head(new Node(other._head->value)), _size(other._size) {
         Node* _node = this->_head;
         Node* _goto = other._head->next;
         while (_goto != nullptr) {
-            this->_size++;
             _node->next = new Node(_goto->value);
             _node = _node->next;
             _goto = _goto->next;
@@ -62,27 +61,17 @@ List::value_type& List::front() { return _head->value; }
     }
 /// \todo implement copy assignment operator
     List &List::operator=(const List &other) {
-        this->~List();
-        this->_size = other._size;
-        this->_head = new Node (other._head->value);
+        List temp(other);
 
-        Node* _node = this->_head;
-        Node* _goto = other._head->next;
-        while (_goto != nullptr) {
-            _node->next = new Node(_goto->value);
-            _node = _node->next;
-            _goto = _goto->next;
-        }
+        std::swap(temp._size, this->_size);
+        std::swap(temp._head, this->_head);
         return *this;
     }
 
 /// \todo implement move assignment operator
 List& List::operator=(List&& other){
-    this->~List();
-    this->_head = nullptr;
-    this->_size = 0;
-    std::swap(other._size, _size);
-    std::swap(other._head, _head);
+    std::swap(other._size, this->_size);
+    std::swap(other._head, this->_head);
     return *this;
     }
 

@@ -1,0 +1,6 @@
+/home/swarsel/Documents/GitHub/ex12/ex12/build/CMakeFiles/Vector.dir
+/home/swarsel/Documents/GitHub/ex12/ex12/build/CMakeFiles/testA.dir
+/home/swarsel/Documents/GitHub/ex12/ex12/build/CMakeFiles/testB.dir
+/home/swarsel/Documents/GitHub/ex12/ex12/build/CMakeFiles/testC.dir
+/home/swarsel/Documents/GitHub/ex12/ex12/build/CMakeFiles/edit_cache.dir
+/home/swarsel/Documents/GitHub/ex12/ex12/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,1 @@
+/nix/store/90h6k8ylkgn81k10190v5c9ldyjpzgl9-gcc-wrapper-12.3.0/bin/g++ -g CMakeFiles/testB.dir/List.testB.cpp.o -o testB  -Wl,-rpath,/home/swarsel/Documents/GitHub/ex13/ex13/build libList.so 

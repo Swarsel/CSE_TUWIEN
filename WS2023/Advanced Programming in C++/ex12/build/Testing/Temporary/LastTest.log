@@ -1,0 +1,51 @@
+Start testing: Nov 28 05:14 CET
+----------------------------------------------------------
+1/3 Testing: testA
+1/3 Test: testA
+Command: "/home/swarsel/Documents/GitHub/ex12/build/ex12/testA"
+Directory: /home/swarsel/Documents/GitHub/ex12/build/ex12
+"testA" start time: Nov 28 05:14 CET
+Output:
+----------------------------------------------------------
+vec.size()=7
+vec[0]=42
+vec[6]=42
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"testA" end time: Nov 28 05:14 CET
+"testA" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/3 Testing: testB
+2/3 Test: testB
+Command: "/home/swarsel/Documents/GitHub/ex12/build/ex12/testB"
+Directory: /home/swarsel/Documents/GitHub/ex12/build/ex12
+"testB" start time: Nov 28 05:14 CET
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"testB" end time: Nov 28 05:14 CET
+"testB" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/3 Testing: testC
+3/3 Test: testC
+Command: "/home/swarsel/Documents/GitHub/ex12/build/ex12/testC"
+Directory: /home/swarsel/Documents/GitHub/ex12/build/ex12
+"testC" start time: Nov 28 05:14 CET
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"testC" end time: Nov 28 05:14 CET
+"testC" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Nov 28 05:14 CET

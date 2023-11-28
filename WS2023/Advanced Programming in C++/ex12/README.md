@@ -25,7 +25,7 @@ private:
   value_type* _data = nullptr; ///< current data holder
 public:
   // ...
-  Vector(const Vector& other) = default;    // defective
+  Vector(const Vector& other) = default;    // defective 
   Vector(Vector&& other)= default;          // defective
   ~Vector()= default;                       // defective
   // ...
@@ -51,8 +51,8 @@ public:
 ├── CMakeLists.txt          # top-level configuration of the project
 ├── ex12                    # sources
 │   ├── CMakeLists.txt      # configuration w.r.t to sources in this folder
-│   ├── Vector.hpp          # class definition
-│   ├── Vector.cpp          # member function definitions
+│   ├── Vector.hpp          # class definition 
+│   ├── Vector.cpp          # member function definitions 
 │   ├── Vector.testA.cpp    # ...
 │   ├── Vector.testB.cpp    # ...
 │   └── Vector.testC.cpp    # ...
@@ -60,7 +60,7 @@ public:
 │   ├── CMakeLists.txt      # configuration w.r.t to sources in this folder
 │   └── main.cpp            # benchmark executable
 ├── doxygen                 # doxygen configuration
-│   ├── CMakeLists.txt
+│   ├── CMakeLists.txt      
 │   └── doxygen-awesome.css
 ├── .clang-format           # format style for c++ source code
 ├── .expected-files         # list of files considered for testing your submission

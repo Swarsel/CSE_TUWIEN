@@ -1,28 +1,36 @@
+# flake.nix
 {
-  description = "Basic C++ project";
-
+  description = "C/C++ environment";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/23.05";
-
-    utils.url = "github:numtide/flake-utils";
-    utils.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
-  outputs = { self, nixpkgs, ... }@inputs: inputs.utils.lib.eachSystem [
-    "x86_64-linux" "i686-linux" "aarch64-linux" "x86_64-darwin"
-  ] (system: let pkgs = import nixpkgs {
-                   inherit system;
-                 };
-             in {
-               devShell = pkgs.mkShell rec {
-                 name = "advcpp ex11";
+  outputs = {nixpkgs, ...}: let
+    system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.${system};
+    llvm = pkgs.llvmPackages_latest;
+  in {
+    devShells.${system}.default = pkgs.mkShell {
 
-                 packages = with pkgs; [
-                   # Development Tools
-                   llvmPackages_16.clang
-                   cmake
-                   cmakeCurses
-                 ];
-               };
-             });
+      packages = with pkgs; [
+        #builder
+        cmake
+        #headers
+        clang-tools
+        #lsp
+        llvm.libstdcxxClang
+        #tools
+        cppcheck
+        valgrind
+        doxygen
+      ];
+      hardeningDisable = ["all"];
+      # direnv does not allow aliases, use scripts as a workaround
+      shellHook = ''
+      PATH_add ~/.dotfiles/scripts/devShell
+      '';
+      # ...
+
+    };
+  };
 }

@@ -11,9 +11,8 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/swarsel/Documents/GitHub/ex13/ex13/List.testB.cpp" "ex13/CMakeFiles/testB.dir/List.testB.cpp.o" "gcc" "ex13/CMakeFiles/testB.dir/List.testB.cpp.o.d"
   )
 
-# Targets to which this target links.
-set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/swarsel/Documents/GitHub/ex13/build/ex13/CMakeFiles/List.dir/DependInfo.cmake"
+# Targets to which this target links which contain Fortran sources.
+set(CMAKE_Fortran_TARGET_LINKED_INFO_FILES
   )
 
 # Fortran module output directory.

@@ -1,0 +1,7 @@
+/home/swarsel/Documents/GitHub/ex13/ex13/build/CMakeFiles/List.dir
+/home/swarsel/Documents/GitHub/ex13/ex13/build/CMakeFiles/testA.dir
+/home/swarsel/Documents/GitHub/ex13/ex13/build/CMakeFiles/testB.dir
+/home/swarsel/Documents/GitHub/ex13/ex13/build/CMakeFiles/testC.dir
+/home/swarsel/Documents/GitHub/ex13/ex13/build/CMakeFiles/testD.dir
+/home/swarsel/Documents/GitHub/ex13/ex13/build/CMakeFiles/edit_cache.dir
+/home/swarsel/Documents/GitHub/ex13/ex13/build/CMakeFiles/rebuild_cache.dir
