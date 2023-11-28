@@ -1,0 +1,1 @@
+/nix/store/90h6k8ylkgn81k10190v5c9ldyjpzgl9-gcc-wrapper-12.3.0/bin/g++ -O3 -DNDEBUG CMakeFiles/testB.dir/Wrappers.testB.cpp.o -o testB  -lm 
