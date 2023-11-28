@@ -1,0 +1,1 @@
+/nix/store/7wkshj58fcsl1f3zyi67qsxgl1p8nki1-gcc-wrapper-12.2.0/bin/g++  -g -fsanitize=address  -fsanitize=address CMakeFiles/testA.dir/Widget.testA.cpp.o -o testA  -Wl,-rpath,/home/swarsel/Documents/GitHub/ex11/build/ex11 -lm libWidget.so -lm 

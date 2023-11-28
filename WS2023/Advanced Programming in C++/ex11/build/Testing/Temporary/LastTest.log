@@ -1,0 +1,48 @@
+Start testing: Oct 19 10:51 CEST
+----------------------------------------------------------
+1/3 Testing: testA
+1/3 Test: testA
+Command: "/home/swarsel/Documents/GitHub/ex11/build/ex11/testA"
+Directory: /home/swarsel/Documents/GitHub/ex11/build/ex11
+"testA" start time: Oct 19 10:51 CEST
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"testA" end time: Oct 19 10:51 CEST
+"testA" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/3 Testing: testB
+2/3 Test: testB
+Command: "/home/swarsel/Documents/GitHub/ex11/build/ex11/testB"
+Directory: /home/swarsel/Documents/GitHub/ex11/build/ex11
+"testB" start time: Oct 19 10:51 CEST
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"testB" end time: Oct 19 10:51 CEST
+"testB" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/3 Testing: testC
+3/3 Test: testC
+Command: "/home/swarsel/Documents/GitHub/ex11/build/ex11/testC"
+Directory: /home/swarsel/Documents/GitHub/ex11/build/ex11
+"testC" start time: Oct 19 10:51 CEST
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"testC" end time: Oct 19 10:51 CEST
+"testC" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 19 10:51 CEST

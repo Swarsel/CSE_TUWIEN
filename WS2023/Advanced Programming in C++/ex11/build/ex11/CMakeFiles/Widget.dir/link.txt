@@ -1,0 +1,1 @@
+/nix/store/7wkshj58fcsl1f3zyi67qsxgl1p8nki1-gcc-wrapper-12.2.0/bin/g++ -fPIC  -g -fsanitize=address  -fsanitize=address -shared -Wl,-soname,libWidget.so -o libWidget.so CMakeFiles/Widget.dir/Widget.cpp.o  -lm 
