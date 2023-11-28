@@ -8,7 +8,7 @@
 
 /** Computes y = A*x for a sparse matrix A in CSR format and vector x,y  */
 __global__
-void csr_matvec_product(int N, int *rowoffsets, int *colindices, const double *values, double *x, double *y) {
+void csr_matvec_product(int N, int *rowoffsets, int *colindices, double *values, double *x, double *y) {
     for (int row = blockDim.x * blockIdx.x + threadIdx.x; row < N; row += gridDim.x * blockDim.x) {
         double val = 0;
         for (int jj = rowoffsets[row]; jj < rowoffsets[row+1]; ++jj) {
@@ -108,7 +108,7 @@ void conjugate_gradient(size_t N,  // number of unknows
     time3 = timer.get();
     cudaMemcpy(&rr, cuda_rr, sizeof(double), cudaMemcpyDeviceToHost);
     // std::cout << rr << std::endl;
-
+    double rr0 = rr;
     int iters = 0;
     while (1) {
 
@@ -158,7 +158,7 @@ void conjugate_gradient(size_t N,  // number of unknows
 
         // std::cout << rprp << std::endl;
 
-        if (rr < 1e-16) break;
+        if (std::sqrt(rr/rr0) < 1e-6) break;
 
         beta = rr / rr_prev;
 
@@ -194,7 +194,7 @@ void conjugate_gradient(size_t N,  // number of unknows
     cudaFree(cuda_r);
     cudaFree(cuda_Ap);
     cudaFree(cuda_solution);
-
+    cudaFree(cuda_rr);
 }
 
 

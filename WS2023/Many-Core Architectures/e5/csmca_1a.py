@@ -55,7 +55,7 @@ myobj = {'src': "",
          'profiler': 'none'} # Possible values: none, nvprof
 
 times = []
-its = 100
+its = 10
 for it in range(its):
     myobj['src'] = open("1a.cu", "r").read()
     response = requests.post(url, data = myobj)
@@ -65,7 +65,7 @@ for it in range(its):
 
 print()
 times.sort()
-times_kept = times[10:-10]
+times_kept = times[2:-2]
 total_time = 0
 for t in times_kept:
     total_time += t

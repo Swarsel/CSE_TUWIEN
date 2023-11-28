@@ -67,6 +67,7 @@ for it in range(its):
 print()
 total_time = time / its
 print(total_time)
+print(total_time * 1e6)
 
 with open(f"data/{fln}", "w+") as fil:
   fil.write(str(total_time))

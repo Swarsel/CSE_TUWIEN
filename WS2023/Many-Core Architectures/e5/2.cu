@@ -8,7 +8,7 @@
 
 /** Computes y = A*x for a sparse matrix A in CSR format and vector x,y  */
 __global__
-void csr_matvec_product(int N, int *rowoffsets, int *colindices, const double *values, double *x, double *y) {
+void csr_matvec_product(int N, int *rowoffsets, int *colindices, double *values, double *x, double *y) {
     for (int row = blockDim.x * blockIdx.x + threadIdx.x; row < N; row += gridDim.x * blockDim.x) {
         double val = 0;
         for (int jj = rowoffsets[row]; jj < rowoffsets[row+1]; ++jj) {
@@ -106,6 +106,7 @@ void conjugate_gradient(size_t N,  // number of unknows
     // cudaDeviceSynchronize();
     cudaMemcpy(&rr, cuda_rr, sizeof(double), cudaMemcpyDeviceToHost);
     // std::cout << rr << std::endl;
+    double rr0 = rr;
 
     int iters = 0;
     while (1) {
@@ -146,7 +147,7 @@ void conjugate_gradient(size_t N,  // number of unknows
 
         // std::cout << rprp << std::endl;
 
-        if (rr < 1e-8) break;
+        if (std::sqrt(rr/rr0) < 1e-6) break;
 
         beta = rr / rr_prev;
 
@@ -172,6 +173,7 @@ void conjugate_gradient(size_t N,  // number of unknows
     cudaFree(cuda_r);
     cudaFree(cuda_Ap);
     cudaFree(cuda_solution);
+    cudaFree(cuda_rr);
 
 }
 
@@ -209,13 +211,19 @@ void solve_system(size_t points_per_direction) {
     //
     // Call Conjugate Gradient implementation (CPU arrays passed here; modify to use GPU arrays)
     //
+    Timer timer;
+    double time;
+    timer.reset();
+
     conjugate_gradient(N, csr_rowoffsets, csr_colindices, csr_values, rhs, solution);
+    time = timer.get();
+    std::cout << time;
 
     //
     // Check for convergence:
     //
     double residual_norm = relative_residual(N, csr_rowoffsets, csr_colindices, csr_values, rhs, solution);
-    //std::cout << "Relative residual norm: " << residual_norm << " (should be smaller than 1e-6)" << std::endl;
+    // std::cout << "Relative residual norm: " << residual_norm << " (should be smaller than 1e-6)" << std::endl;
 
     free(solution);
     free(rhs);
@@ -228,11 +236,6 @@ void solve_system(size_t points_per_direction) {
 
 int main(int argc, char *argv[]) {
 
-    Timer timer;
-    double time;
-    timer.reset();
-    solve_system(std::atoi(argv[1])); // solves a system with 100*100 unknowns
-    time = timer.get();
-    std::cout << time;
+        solve_system(std::atoi(argv[1])); // solves a system with 100*100 unknowns
     return EXIT_SUCCESS;
 }
