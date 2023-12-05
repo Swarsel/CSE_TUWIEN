@@ -129,14 +129,12 @@ First, the results with all four systems compared against each other:
 
 \includegraphics[scale=0.8]{plots/1comp_quad.png}
 
-(The x-axis is wrongly labeled as \(N\) here, it should read \(\sqrt{N}\).) \\
 I have to say that I am disappointed with the GPU matrix assembly results - after last weeks results, I thought I would reach way better runtimes here. But it seems not to be the case here. Interestingly, the GPU assembled implementation really takes off in runtime (in a bad way) for high \(N\), even taking longer than the classical implementation then. Maybe I introduced a bug while transporting the pipelined implementation into the GPU assembly framework, but at least I could not find it.
 
 Anyways, what we actually wanted to show here holds - that is, the pipelined implementations are a lot faster than the classical implementations. To get a better picture of this distinction, I ran another benchmark with more system sizes only comparing the CPU assembly versions against each other:
 
 \includegraphics[scale=0.8]{plots/1comp_dual.png}
 
-(The x-axis is wrongly labeled as \(N\) here, it should read \(\sqrt{N}\).) \\
 Depending on the size of \(N\), we see performance increases between \(10-40\%\), which is quite respectable. The best gain in that respect is received for `middling' \(N\) that are neither too high nor too low.
 
 \end{document}
