@@ -34,7 +34,10 @@ matplotlib_use("TkAgg")
 
 
 #url = 'https://k40.360252.org/2022/ex4/run.php'
-url = 'https://rtx3060.360252.org/2023/ex6/run.php'
+
+# as of solving this exercise, the online environment is not available (as so often) - this will make sure we are going to use the correct one once it is available again.
+url = 'https://rtx3060.360252.org/2023/ex7/run.php'
+url2 = 'https://rtx3060.360252.org/2023/ex6/run.php'
 
 
 # Check whether a source file has been passed:
@@ -53,11 +56,11 @@ url = 'https://rtx3060.360252.org/2023/ex6/run.php'
 
 # Set up JSON object to hold the respective fields, then send to the server and print the returned output (strip HTML tags, don't repeat the source code)
 
-fnames = ['2_time_ass.cu', '2_time_cpuass.cu', '2_time_cg.cu']
+fnames = ['1_cpuass_pipe.cu', '1_cpuass_classical.cu']
 gtimes = []
-Ns = [10,20,30,50,100, 250, 500]
-
-for fln, pltlabel in zip(fnames, ['Assembly GPU', 'Assembly CPU', 'CG']):
+Ns = [10, 25, 50, 100, 250, 400, 500, 750, 1000, 1500, 2000]
+print(Ns)
+for fln, pltlabel in zip(fnames, ['Pipelined CG', 'Classical CG']):
     print(f"benchmarking {fln}")
     myobj = {'src': open(fln, "r").read(),
              'userargs': ' '.join(sys.argv[2:]),
@@ -74,8 +77,12 @@ for fln, pltlabel in zip(fnames, ['Assembly GPU', 'Assembly CPU', 'CG']):
         # time2 = []
         for it in range(its):
             myobj['userargs'] = f"{str(N)} {str(N)}"
-            response = requests.post(url, data = myobj)
-            add = response.text.split("pre")[5].replace("<","").replace("/","").replace(">","").replace("\n","")
+            try:
+                response = requests.post(url, data = myobj)
+                add = response.text.split("pre")[5].replace("<","").replace("/","").replace(">","").replace("\n","")
+            except IndexError:
+                response = requests.post(url2, data = myobj)
+                add = response.text.split("pre")[5].replace("<","").replace("/","").replace(">","").replace("\n","")
             # print(f"{it}. run time {add[:-1]}")
             out = add.split()
             time.append(float(out[0]))
@@ -112,7 +119,7 @@ for fln, pltlabel in zip(fnames, ['Assembly GPU', 'Assembly CPU', 'CG']):
         print()
     plt.loglog(Ns, times, label = pltlabel)
 
-    with open(f"data/{fln}_rawtimes", "w+") as fil:
+    with open(f"data/{fln}_dual_rawtimes", "w+") as fil:
         for nt in times:
             fil.write(f"{str(nt)}\n")
     # with open(f"data/{fln}_reftimes", "w+") as fil:
@@ -125,10 +132,10 @@ for fln, pltlabel in zip(fnames, ['Assembly GPU', 'Assembly CPU', 'CG']):
     #     for nb in bws:
     #         fil.write(str(nb))
 
-plt.title("Measuring exclusive and inclusive scan versions on RTX3060")
+plt.title("Comparing pipelined and non-pipelined CG, CPU Assembly")
 plt.xlabel("$\sqrt{N}$")
 plt.ylabel("Runtime [s]")
 plt.grid()
 plt.legend()
-plt.savefig(f"plots/2comp.png")
+plt.savefig(f"plots/1comp_dual.png")
 plt.show()
