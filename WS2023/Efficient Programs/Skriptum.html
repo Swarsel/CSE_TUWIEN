@@ -1,0 +1,685 @@
+<html data-darkreader-mode=dynamic data-darkreader-scheme=dark class="yidcvqgy idc0_343 TridactylThemeDefault" style><!--
+ Page saved with SingleFile 
+ url: http://www.complang.tuwien.ac.at/anton/lvas/skriptum-effizienz.html 
+ saved date: Wed Dec 06 2023 16:50:02 GMT+0100 (Central European Standard Time)
+--><meta charset=utf-8><style class="darkreader darkreader--user-agent" media=screen>.jfk-bubble.gtx-bubble,.captcheck_answer_label>input+img,span#closed_text>img[src^="https://www.gstatic.com/images/branding/googlelogo"],span[data-href^="https://www.hcaptcha.com/"]>#icon,#bit-notification-bar-iframe,::-webkit-calendar-picker-indicator{filter:invert(100%) hue-rotate(180deg) contrast(90%)!important}:root{--darkreader-neutral-background:#131516;--darkreader-neutral-text:#d8d4cf;--darkreader-selection-background:#004daa;--darkreader-selection-text:#e8e6e3}html{background-color:#181a1b!important}html{color-scheme:dark!important}html,body{background-color:#181a1b}html,body{border-color:#736b5e;color:#e8e6e3}a{color:#3391ff}::placeholder{color:#b2aba1}::-webkit-scrollbar{background-color:#202324;color:#aba499}::-webkit-scrollbar-thumb{background-color:#454a4d}::-webkit-scrollbar-corner{background-color:#181a1b}*{scrollbar-color:#454a4d #202324}::selection{background-color:#004daa!important;color:#e8e6e3!important}::-moz-selection{background-color:#004daa!important;color:#e8e6e3!important}</style><meta name=darkreader content=c10ffc73831bf7146d0ea57094c300a9><style class="darkreader darkreader--override" media=screen>::placeholder{opacity:0.5!important}</style><meta name=referrer content=no-referrer><link type=image/x-icon rel="shortcut icon" href="data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAD///8A////AP///wD///8A7eDKNcylZZu2fyPerGwD/axsA/22fyPdzKVlm+7hzTL///8A////AP///wD///8A////AP///wD6+PMKyqNin6trAP2rawD/q2sA/6trAP+rawD/q2sA/6trAP+rawD9y6VknPv59Qn///8A////AP///wD6+PMKvo49xKtrAP+rawD/q2sA/6trAP+rawD/q2sA/6trAP+rawD/q2sA/6trAP+/kD/C+/n1Cf///wD///8AzKVlm6trAP+rawD/q2sA/6trAP+rawD/q2sA/6trAP+rawD/q2sA/6trAP+wdRH/yJ9Z/9a4hZr///8A7uHNMqtrAP2rawD/q2sA/6trAP+rawD/wJBB/8OWS//Mpmb/u4gy/7uIM//AkED/v449/9zClv/gyKH97+TRL8ynaJmrawD/q2sA/6trAP+rawD/q2sA/9/HoP/bv5H/3sWb/8+rbv/UtH7/3sad/9a4hP+6hi//4Mmi/86pbJS3gSfaq2sA/6trAP+rawD/q2sA/6trAP/fx6D/zqlr/+PPrP/Inln/59a4/+nYvf/Gm1P/3cOY/+LMqP+4gyvWrW8G+KtrAP+rawD/q2sA/6trAP+rawD/17qI/6trAP+sbgX/q2sA/6trAP+sbQP/q2sA/6xsA/+rawD/rnEK9q1vBvirawD/q2sA/6trAP+rawD/q2sA/6trAP+rawD/q2sA/6trAP+rawD/q2sA/7J3Ff/Oqmz/q2sA/65xCvW3gSfZq2sA/6trAP+2fyT/4Mmj/9a3g//Wt4T/3sWb/8CRQv/Wt4P/17qI/7yKNv/Oqmz/7N3F/+PNqv+8ijbWzahpl6trAP+rawD/xZlP/8abVP+9jDn/4cum/7qGL//Us3z/38ef/+DJo//Bk0T/07J6/9vAk//UtH7/28GUlO7jzzKrawD9q2sA/61wCP/Us33/xJdM/8GSRP/Wt4P/s3kY/9S0fv/Us3z/1raC/7qHMP/UtH7/0rB3/e/k0i7///8AzKZmm6trAP+rawD/q2sA/6trAP+rawD/q2sA/6trAP+rawD/q2sA/6trAP+rawD/q2sA/82oapf///8A////APv59Qm+jj3Cq2sA/6trAP+rawD/q2sA/6trAP+rawD/q2sA/6trAP+rawD/q2sA/8CRQcD7+fUH////AP///wD///8A+/j1CculZJurawD9q2sA/6trAP+rawD/q2sA/6trAP+rawD/q2sA/cynaJr7+fUJ////AP///wD///8A////AP///wD///8A7uHNMsynaJq2gCXbrW8G+q1vBvq3gSfazahpmO/j0DL///8A////AP///wD///8A+B8AAOAHAADAAwAAgAEAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAAgAEAAMADAADgBwAA+B8AAA=="><link rel=canonical href=http://www.complang.tuwien.ac.at/anton/lvas/skriptum-effizienz.html><meta http-equiv=content-security-policy content="default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:; frame-src 'self' data:;"><style>img[src="data:,"],source[src="data:,"]{display:none!important}</style><body><pre>Literatur
+---------
+
+Allgemein:
+
+J. L. Bentley: Writing Efficient Programs, Prentice Hall, 1982.
+
+Bitte Kapitel 2 nicht im vorhinein lesen (kann auch übersprungen werden).
+
+Michael Abrash
+<a href=https://www.jagregory.com/abrash-black-book/>Michael Abrash's Graphics Programming Black Book, Special Edition</a>
+Coriolis Group, 1997
+
+Mikrooptimierungen: Optimierungsmanuals diverser Prozessorhersteller,
+z.B.:
+</pre>
+<ul> 
+<li><a href=http://www.amd.com/us-en/assets/content_type/white_papers_and_tech_docs/40546.pdf>Software
+Optimization Guide for AMD Family 10h Processors</a> (älter: <a href=http://www.amd.com/us-en/assets/content_type/DownloadableAssets/dwamd_25112.pdf>Software
+Optimization Guide for AMD Athlon 64 and AMD Opteron Processors</a>,
+<a href=http://www.amd.com/us-en/assets/content_type/white_papers_and_tech_docs/22007.pdf>AMD&nbsp;Athlon
+Processor x86 Code Optimization Guide</a>)
+<li> <a href=http://www.intel.com/design/processor/manuals/248966.pdf>Intel
+64 and IA-32 Architectures Optimization Reference Manual</a> (älter:<a href=http://developer.intel.com/design/Pentium4/manuals/248966.htm>Intel
+Pentium 4 Processor Optimization Reference Manual</a>, <a href=http://developer.intel.com/design/PentiumII/manuals/245127.htm>Intel
+Architecture Optimization Reference Manual</a>)
+</ul>
+Informationen über Prozessoren von anderen:
+<ul>
+ <li><a href=http://www.agner.org/optimize/microarchitecture.pdf>The
+ microarchitecture of Intel, AMD and VIA CPUs</a>
+ von Agner Fog.
+ <li><a href=http://www.agner.org/optimize/instruction_tables.pdf>Instruction
+ tables: Lists of instruction latencies, throughputs and
+ micro-operation breakdowns for Intel, AMD and VIA CPUs</a></li><a href=http://www.agner.org/optimize/instruction_tables.pdf> von
+ Agner Fog
+ </a><li><a href=http://www.agner.org/optimize/instruction_tables.pdf></a><a href=http://www.agner.org/optimize/>Weitere Informationen
+ über Optimierungen von Agner Fog</a>
+ 
+ <li><a href=https://gmplib.org/~tege/x86-timing.pdf>Instruction
+ latencies and throughput for AMD and Intel x86 processors</a> von
+ Torbjörn Granlund
+</ul>
+<pre>Ist Effizienz nötig?  --------------------
+
+Häufige Behauptung: "Heute sind die Computer so schnell (haben soviel
+Speicher, etc.), dass man sich keine Gedanken um Effizienz machen
+muss."
+
+Andererseits: Warum ersetzen die meisten ihre alten Computer noch
+immer durch neuere?  Warum geben die Käufer mehr Geld für
+schnellere/größere Computer aus, statt sich den billigsten (und damit
+langsamsten etc.) zu kaufen, wenn der langsamste ohnehin schnell genug
+ist?
+
+Nicht jede Software und ihre Anwendung ist gleich; es gibt
+
+- Software, die auf allen Computern der letzten fünf Jahre bei allen
+vorkommenden Eingaben so schnell reagiert, dass es von Menschen als
+"sofort" wahrgenommen wird, bzw. die bei wiederholter Eingabe oder
+gleichzeitigem Betrieb mehrerer Prozesse den Prozessor nicht voll
+auslastet.
+
+Auf diese Software trifft die obige Behauptung zu.  Aber es gibt auch:
+
+- Software, die früher langsam war, und heute immer noch merkliche
+Zeit braucht.  Mehr Geschwindigkeit reduziert die Wartezeiten noch
+weiter.
+
+- Software, die früher selten aufgerufen wurde, und heute oft
+aufgerufen wird (schnelles Feedback erlaubt andere Arbeitsabläufe).
+Mehr Geschwindigkeit bietet noch mehr Freiheiten bei den
+Arbeitsabläufen.
+
+- Software, bei der die zu verarbeitenden Eingaben mit der Zeit größer
+oder komplexer geworden sind, sodass sie noch immer ähnlich lange
+braucht wie früher.  Mehr Geschwindigkeit erlaubt die Verarbeitung noch
+größerer Mengen an Daten.
+
+- Software, bei der die schnellere Hardware zu Verbesserungen in der
+Funktionalität ausgenutzt wurde, sodass die Geschwindigkeit immer noch
+gleich ist, aber die Software besser/schöner.  Mehr Geschwindigkeit
+erlaubt noch mehr Funktionalität.
+
+Übung: Nennen sie für jeden dieser fünf Fälle ein Software-Produkt.
+
+
+Arten von Effizienz
+-------------------
+
+Laufzeit
+  CPU
+  Festplatte
+  Netzwerk
+  andere I/O
+Speicher
+  Hauptspeicher (RAM)
+  ROM (bei embedded systems)
+  Plattenspeicher
+Effizienz in der Benutzung (Requirements-Analyse, user interface design)
+
+
+Kosten von Ineffizienz
+----------------------
+
+Bei interaktiven Anwendungen: Wartezeit des Benutzers.  Wartezeiten im
+Bereich von 1-10s führen zu ca. dem dreifachen Zeitverlust beim
+Benutzer.
+
+Früher: CPU-Sekunden-Verrechnung.  Bentley (1982) nennt z.B. $200 pro
+CPU-Stunde einer DEC-10 und $50 Kosten pro Programmiererstunde.
+
+Heute auf Servern: Mehr Server (Hardware, Administrationsaufwand,
+Platz- und Energieverbrauch).
+
+Bei embedded systems: Teurere Hardware (mehr RAM/ROM, schnellerer
+Prozessor, stärkere Stromversorgung, bessere Abschirmung, etc.), in
+x-facher Ausführung.
+
+
+Wieviel Effizienz ist sinnvoll?
+-------------------------------
+
+Interaktive Software: Latenzzeiten von unter 0.3s werden bei
+Befehl-Antwort-Interaktion als "sofort" empfunden.  Bei interaktiver
+Software mit Hand-Auge-Koordination (oder auch Hand-Ohr-Koordination)
+sind noch wesentlich geringere Latenzzeiten erforderlich (20ms im
+Musik-Bereich).
+
+Animierte Software: mehr Frames/s als die Bildwiederholrate des
+Bildschirms können nicht gezeigt werden.
+
+Wenn ein Teilsystem den Zeitverbrauch (oder sonstigen
+Resourcenverbrauch) dominiert und nicht weiter optimiert werden kann,
+ist es meist nicht sinnvoll, die anderen Teilsysteme noch effizienter
+zu machen.
+
+Bei vorgegebenen Resourcen und vorgegebener Funktionalität
+(z.B. embedded systems) ist es "nur" notwendig, mit den Resourcen
+auszukommen.
+
+Bei allgemein verwendbaren Komponenten (z.B. der STL) kann man oft
+kein oberes Limit fuer die sinnvolle Effizienz angeben; das hängt von
+der jeweiligen Anwendung ab.
+
+Kommerziell: Solange die Kunden fuer das effizientere Produkt soviel
+mehr zahlen, wie die Optimierung gekostet hat, ist die Optimierung
+kommerziell sinnvoll.  Diese Überlegung setzt voraus, dass eine
+nicht-optimierte Version existiert; wenn dagegen ohne Zwischenschritt
+eine effizientere Version entwickelt wird, sind die Entwicklungskosten
+möglicherweise geringer, aber möglicherweise auch die Einnahmen, wenn
+das Prodokt später auf den Markt kommt.
+
+
+Andere Ziele, oder: Kosten von Effizienz
+----------------------------------------
+
+Korrektheit
+  "If a program is not correct, it matters little how fast it runs."
+  Kernighan und Plauger, The Elements of Programming Style
+Klarheit, Einfachheit
+Entwicklungsaufwand
+ "Debugging is twice as hard as writing the code in the first place.
+ Therefore, if you write the code as cleverly as possible, you are,
+ by definition, not smart enough to debug it." - Brian W. Kernighan
+Wartungsaufwand
+geringe time-to-market
+
+
+Software Engineering
+--------------------
+
+Keine Effizienz-Überlegungen -&gt;
+  u.U. unbrauchbares Programm
+  u.U. grobe Änderungen spät im Entwicklungszyklus, mit entsprechenden Folgen
+  für time-to-market, Entwicklungskosten und Wartungsaufwand.
+
+"Wir optimieren alles" -&gt;
+  hoher Entwicklungsaufwand
+  hoher Wartungsaufwand
+  lange Entwicklungszeit (und time-to-market)
+  komplexes Programm -&gt; Übersehen von wichtigen Optimierungsmöglichkeiten oder
+                        grobe Änderungen spät im Entwicklungszyklus
+
+Beobachtungen:
+  Kleine Teile des Codes brauchen den Großteil der Laufzeit
+  Man kann Programme so schreiben, dass kleine Teile den Großteil
+    des Datenspeichers verwalten
+  Aber: Was wieviel braucht, weiß man oft erst durch Messungen am 
+        laufenden Code.  Programmierer verschätzen sich dabei oft erheblich.
+
+Konsequenz: Für Einfachkeit, Flexibilität, und Wartbarkeit entwerfen
+  und codieren, dann messen, dann die kritischen Teile optimieren, und
+  zwar schrittweise (dabei noch möglichst einfach und flexibel
+  bleiben, sonst werden spätere Optimierungsschritte schwerer).
+
+Problem: Manche Effizienzprobleme sind schon im Design oder in der
+Spezifikation festgelegt -&gt; Prototyping ("Plan to trow one away; you
+will, anyway." Fred Brooks).
+
+
+Methoden
+--------
+
+Ist das Programm effizient genug?
+  Messung, Instrumentierung (Einfügen von Messcode im Programm)
+Wodurch wird die meiste Zeit verbraucht?
+  Profiling, Performance Counter, Instrumentierung
+Wie mache ich einen Programmteil effizienter?
+  Korrektheitserhaltende Transformation
+Wurden durch die Optimierung Bugs eingeführt?
+  Automatisches Testsystem und Testfälle.
+
+unoptimiertes Programm
+  |
+  V
+Tests
+  | bestanden
+  V____________________
+Messung                \
+  | zu ineffizient     |
+  V                    |
+Profiling              |
+  |                    |
+  V                    |
+Programmtransformation |
+  |                    |
+  V                    |
+Tests                  |
+  | bestanden          |
+  \____________________/
+
+
+Was können optimierende Compiler, was nicht?
+--------------------------------------------
+
+Compiler verwenden auch korrektheitserhaltende Transformationen, aber
+
+- sie wissen nicht soviel über das konkrete Programm und seine
+Korrektheitsbedingungen (z.B. don't-care-Resultate).
+
+- sie betrachten oft nur einen Teil des Programms auf einmal
+(z.B. einen Basic Block, eine Schleife, eine Prozedur, oder eine
+Compilation Unit), und sehen keine Optimierungsmöglichkeiten jenseits
+davon.
+
+- sie wissen oft nicht, was wie oft ausgeführt wird, und was daher
+eine Optimierung wäre (aber: profile-guided Optimization).
+
+- die Anzahl der Optimierungen in Compilern ist durch die Ziele
+bezüglich Entwicklungsaufwand, Testaufwand, und Zuverlässigkeit
+(Anzahl der Bugs) begrenzt.
+
+Oft kann man die eigentliche Optimierung vom Compiler durchführen
+lassen, und muss nur die Stolpersteine beseitigen.  Beispiel:
+
+  for (i=0, best=0; i&lt;n; i++)
+    if (a[i]&lt;a[best])
+      best=i;
+  return best;
+
+Das läuft auf vielen Prozessoren schneller, wenn man es so schreibt:
+
+  for (p=a, bestp=a, endp=a+n; p&lt;endp; p++)
+    if (*p &lt; *bestp)
+      bestp = p;
+  return bestp-a;
+
+Das spart dem Prozessor das die Adressberechnung von a[i] und a[best]
+in jedem Durchlauf.  Aber eigenlich können die meisten Compiler diese
+Optimierung selbst, nur müssen sie weiterhin zusätzlich i und best
+mitberechnen, weil
+
+1) best am Ende verwendet wird, und
+
+2) (im Fall von gcc-3.0) die Ersetzung des Vergleichs i&lt;n durch p&lt;endp
+nicht sicher korrekt ist (bei Arithmetik mit begrenzten ganzen Zahlen
+folgt aus a&lt;b nicht a+c&lt;b+c; allerdings wagen viele Compiler diese
+Transformation im Zusammenhang mit Zeigerarithmetik in C trotzdem,
+wenn die entsprechenden Zeiger auch im Originalprogramm (implizit)
+vorkommen; dann ergibt sich die Korrektheit aus den Regeln für
+Zeigerarithmetik in ANSI C, zusammen mit dem Wissen des Compilers über
+seine Implementierung dieser Regeln).
+
+Das folgende Programm ist näher am Original, erlaubt dem Compiler aber
+diese Optimierung:
+
+  for (i=0, bestp=a; a+i&lt;a+n; i++)
+    if (a[i]&lt;*bestp)
+      bestp=a+i;
+  return bestp-a;
+
+Durch die Verwendung von bestp wurde das erste Problem behoben, und
+durch Verwendung von "a+i&lt;a+n" statt "i&lt;n" das zweite.
+
+Typische Stolpersteine für Compiler:
+
+- mögliche Aliase: das Schreiben in eine Speicherstelle und der
+Zugriff auf eine andere Speicherstelle können nicht umgeordnet werden,
+weil der Compiler nicht weiss, dass die beiden Zugriffe auf
+verschiedene Speicherstellen erfolgen.  Viele Optimierungen
+wollen viele Operationen umordnen.
+
+- mögliche Seiteneffekte/Exceptions: Der Compiler kann nicht umordnen,
+weil er nicht weiss, dass die Operation keine Seiteneffekte hat oder
+Exceptions auslöst.
+
+- Schleifendurchläufe: Der Compiler zieht etwas nicht aus einer
+Schleife heraus, weil es im Fall der 0-fachen Ausführung inkorrekt
+oder ineffizient wäre (und weil sich der Compiler gegen Loop Peeling
+entscheidet, z.B. wegen der Codegröße).
+
+Manche Dinge, die Compiler können, sind auch für den Fachmann
+überraschend; so optimiert gcc beim Ausdruck
+
+*s1==*s2 &amp;&amp; *s1!=0 &amp;&amp; *s2!=0
+
+das "*s2!=0" komplett weg.  Wenn man das im Source-Code kommentarlos
+weglassen würde, wäre er schlechter lesbar (dieses Fragment stammt aus
+einer String-Vergleichsroutine; ohne "*s2!=0" ist es nicht
+offensichtlich, dass die Routine terminiert, wenn s2 endet.
+Alternativ: wegoptimierten Code als Kommentar im Source-Code
+stehenlassen, wenn der Compiler diese Optimierung nicht schafft).
+
+Ein wichtiger Vorteil der Compiler-Optimierung ist also, dass sie
+erlaubt, klaren und wartbaren, und trotzdem effizienten Code zu
+schreiben.
+
+Inwieweit soll man sich auf den Compiler verlassen?
+
+Einerseits: Mit einem anderen Compiler, in der nächsten Version des
+gleichen Compilers, oder nach einer kleinen Änderung am Programm
+könnte der Compiler eine bestimmte Optimierung schon nicht mehr
+schaffen, und herauszufinden, was ein bestimmter Compiler jetzt
+schafft und wie, und was nicht, kostet u.U. mehr Zeit, als die
+Optimierung von Hand durchzuführen.
+
+Andererseits: Es gibt Leute, die noch immer ihren ganzen Code so
+schreiben, wie das für Optimierungszwecke für bestimmte, heute im
+Einsatzbereich der Programme unübliche Prozessoren im Zusammenhang
+nicht-optimierenden Compilern zweckmässig war.
+
+
+Hardware-Eigenschaften
+----------------------
+
+Ungefähre Kosten verschiedener Operationen auf in 2001 verkauften
+Maschinen (ein Zyklus (Z) ist 0.5ns-2ns, aber das ändert sich sehr
+schnell, während die folgenden Werte schon ein paar Jahre lang
+halbwegs richtig sind):
+
+ 1Z   3-4 unabhängige Befehle
+ 1Z   Latenzzeit eines ALU-Befehls
+ 2-3Z Latenzzeit eines Load-Befehls (L1-Hit)
+10Z   Latenzzeit eines Load-Befehls (L1-Miss, L2-Hit)
+100ns Latenzzeit eines Load-befehls (L2-Miss, Main Memory access)
+ 30ns eine Cacheline (32-64B) zwischen Prozessor und Hauptspeicher übertragen
+ 1Z   korrekt vorhergesagter Sprung
+10Z   falsch vorhergesagter Sprung (branch misprediction)
+4-10Z Latenzzeit Integer-Multiplikation
+ 4Z   Latenzzeit FP-Addition/Multiplikation
+50Z   Latenzzeit Division
+100us IP-Ping über Fast Ethernet (100Mb/s)
+100us 1KB Übertragung über Fast Ethernet
+10ms  Latenzzeit Plattenzugriff (seek &amp; rotational delay)
+10ms  400KB sequentieller Plattenzugriff (ohne delay)
+100ms Latenzzeit CD-ROM (drehend; bei Stillstand mehrere Sekunden)
+100ms 600KB sequentieller CD-ROM-Zugriff
+
+Seit Bentley sein Buch schrieb, haben sich die relativen Kosten der
+Operationen verschoben; insbesondere sind die Cache-Miss-Zeiten größer
+geworden und branch prediction gab es damals noch überhaupt nicht.
+Dafür ist Speicher viel billiger geworden.  Es gibt daher einige neue
+Optimierungstechniken, die in Bentley's Buch nicht erwähnt sind.
+
+Umgekehrt sind manche Optimierungen, die früher sinnvoll waren, heute
+nicht mehr sinnvoll, weil der Flaschenhals woanders liegt: Z.B. wurde
+in der Software-Implementierung von X-Grafikoperationen früher
+komplexe Optimierungen angewandt, um die zahl der ausgeführten Befehle
+zu vermindern.  Bei der Neu-Implementierung vor ein paar Jahren wurde
+dagegen relativ einfacher Code geschrieben, weil der Flaschenhals auf
+heutigen Maschinen beim Speichersubsystem liegt, sodass ein
+Wegoptimieren von Befehlen nur zur Folge hätte, dass die CPU mehr Zeit
+mit Warten auf den Speicher verbringt.
+
+
+Algorithmen und Datenstrukturen
+-------------------------------
+
+Conventional Wisdom (aber trotzdem wahr): Wenn im kritischen Bereich
+der falsche Algorithmus bzw. die falsche Datenstruktur gewählt wird,
+sind Gedanken zur effizienten Implementierung dieser Wahl
+verschwendete Zeit (ausser vielleicht, um zu zeigen, dass es
+tatsächlich die falsche Wahl war und nicht nur eine ineffiziente
+Implementierung einer guten Wahl).
+
+Das verleitet leider manche Leute zur Behauptung, dass man sich nur um
+den Algorithmus kümmern muss.  Aber wenn man eine gute Wahl getroffen
+hat, dann kann die effiziente Implementierung noch einiges bringen.
+
+Wie erkennt man eine gute Wahl?  Letztendlich an der Effizienz,
+zusammen mit anderen Zielkriterien (Einfachheit).
+
+Als Hilfestellung gibt es die algorithmische Komplexität
+(O(...)-Notation).  Dabei gibt es aber einige Fallen, die in die Irre
+führen können:
+
+- Algorithmische Komplexität betrachtet meist den
+schlechtest-möglichen Fall, nicht den durchschnittlichen Fall (der
+auch oft schwer bis gar nicht zu charakterisieren ist).
+
+- Algorithmische Komplexität beruht meist auf dem (abstrakten) Zählen
+von bestimmten Operationen, die aber nicht (mehr) unbedingt eine große
+Rolle für die Laufzeit spielen (im Vergleich z.B. zu Cache Misses).
+
+- Algorithmische Komplexität ignoriert konstante Faktoren.  Konstante
+Faktoren spielen oft eine größere Rolle als logarithmische Faktoren
+u.ä.
+
+Beispiel: Peter Fenwick, "Some Perils of Performance Prediction: a
+case study on Pattern Matching", Software - Practice and Experience,
+Vol 31, pp 835-843 April 2001.
+
+Suchen nach einem String in einem längeren Text: Simple Methode hat
+worst-case-Komplexität von O(m*n), Knuth-Morris-Pratt O(n).  Trotzdem
+schlägt dis simple Methode KMP in der Realität, u.a., weil der
+average-case der simplen Methode näher bei O(n) liegt als bei O(m*n),
+und weil die simple Methode einen besseren Konstanten Faktor hat.
+
+
+Die Rolle der Programmiersprache
+--------------------------------
+
+Eingebaute Ineffizienz
+
+Idiomatische Ineffizienz
+
+Effizienz durch Compiler
+
+Effizienz durch Programmiereffizienz (mehr Zeit zum Tuning,
+flexibleres Programm).
+
+Beispiele:
+
+Aliasing in C vs. Fortran (in Fortran sind verschiedene
+Funktionsargumente keine Aliase des gleichen Datums).
+
+Verschachtelte Objekte in Java vs. C++ (Indirektion in Java).
+
+Skalieren bei Zeigerarithmetik in C vs. Forth (C skaliert per default).
+
+0-terminierte Strings in C.
+
+``C++ ist langsam''.
+
+Bei Mikrobenchmarks führen C- und Fortran-Compiler, bei
+Programmierwettbewerben (z.B. Functional Programming Contest; die
+Programmiersprache ist dabei nicht eingeschränkt ist) dagegen nicht.
+
+Flughafen von Riad: Mit Fortran und Assembler zu langsam, mit Forth
+(implementiert per Interpreter) und Assembler schnell genug.
+
+In manchen Fällen kann Assembler noch viel bringen, aber:
+Spezialwissen erforderlich, oft Prozessorabhängig (z.B.: LODSD auf 386
+vs 486).
+
+
+Transformationen
+
+Testfaelle
+
+Programmplatz-Optimierung
+
+Optimierungen
+  von Bentley
+  neu (fuer aktuelle Hardware)
+
+Dieses Jahr gibt es nur die <a href=http://www.complang.tuwien.ac.at/anton/lvas/effizienz.pdf>Folien</a> mit
+den Optimierungstransformationen.
+
+
+Programmbeispiele
+-----------------
+
+1) <a href=http://www.complang.tuwien.ac.at/anton/lvas/effizienz/matmul/>Matrizenmultiplikation</a>.  Demonstriert vor
+allem Optimierungen auf das Speichersystem (Caches) hin.
+
+2) Ein einfacher suboptimaler Algorithmus für das
+Traveling-Salesman-Problem: <a href=http://www.complang.tuwien.ac.at/anton/lvas/effizienz/tsp1.c>tsp1.c</a>
+
+Dieser Algorithmus liefert Ergebnisse mit Weglängen, die um ca. 25%
+über dem Optimum liegen.  Dafür braucht er nur quadratische Zeit,
+währned ein optimaler Algorithmus exponentiell viel Zeit braucht (TSP
+ist NP-vollständig).
+
+Übung: Überlegen Sie sich Optimierungsmöglichkeiten in diesem Programm
+und wieviel sie bringen können.
+
+
+Messwerkzeuge
+-------------
+
+Auf Linux-Intel (g0):
+
+#gprof (function-level profiling):
+gcc -pg -O ts.c -lm
+a.out 10000 &gt;/dev/null
+gprof a.out
+
+#coverage profiling ergibt Ausfuehrungszahlen fuer Zeilen
+gcc -O --coverage ts.c -lm
+a.out 10000 &gt;/dev/null
+gcov ts
+cat ts.c.gcov
+
+#cycle count timing:
+perf stat -e cycles a.out 10000 &gt;/dev/null #doku: "man perf-stat"
+
+#performance counters
+perf stat -e cycles -e instructions -e L1-dcache-load-misses -e dTLB-load-misses a.out 10000 &gt;/dev/null
+
+#was fuer Performance Counters gibt es:
+perf list
+
+Man kann bei perf auch nur die User-Mode-Werte messen, die weniger
+variieren als die Gesamtwerte, und die für unsere Zwecke oft
+relevanter sind (wenn wir Dinge ändern, die nur den user mode
+beeinflussen sollten; allerdings sieht man dann auch Kernel-Aufwand
+nicht, der vom User-Mode indirekt verursacht wird, wie
+z.B. copy-on-write-Operationen des Systems aufgrund von Schreiben in
+eine bis dahin nur gelesene Seite):
+
+perf stat -e cycles:u -e instructions:u -e L1-dcache-load-misses:u -e dTLB-load-misses:u a.out 10000 &gt;/dev/null
+
+
+
+Mit perf kann man auch sehen, welche Befehle besonders viele Zyklen
+(oder sonstige Events) brauchen:
+
+perf record -e cycles:u a.out 10000 &gt;/dev/null
+#schreibt in eine Datei perf.data, Anzeige mit folgenden Befehlen 
+perf annotate  #Assemblercode mit Event-Anteilen
+perf report    #Profil
+
+Wobei die Zuordnung der Events zu den Befehlen nicht sehr genau ist,
+und man dann raten muss, welcher Befehl in der Naehe den Event
+tatsaechlich verursacht hat.
+
+
+
+Beispiel für Optimierung
+------------------------
+
+Angelehnt an Kapitel 2 von [Bentley82].  Der Algorithmus und die Idee
+der Optimierungen sind gleich, aber die Details sind oft
+unterschiedlich.
+
+Das erste Programm ist unser usprüngliches Übungsbeispiel <a href=http://www.complang.tuwien.ac.at/anton/lvas/effizienz/tsp1.c>tsp1.c</a>.
+
+Wir messen die Effektivität der Optimierungen mit:
+
+papiex -q -e PAPI_TOT_INS -e PAPI_BR_MSP a.out 1000 &gt;/dev/null
+
+(also bei Läufen mit 1000 Städten), wobei das Hauptaugenmerk auf die
+Zyklen (tsc) gerichtet ist.
+
+Ob wir bei der Optimierung einen Fehler eingebaut haben, überprüfen
+wir mit
+
+diff tsp.eps <a href=http://www.complang.tuwien.ac.at/anton/lvas/effizienz/tsp_ref.eps>tsp_ref.eps</a>
+
+nach einem Lauf ueber 1000 Städte.  Alles zusammen:
+
+a.out 1000 &gt;/dev/null &amp;&amp; diff tsp.eps tsp_ref.eps &amp;&amp; papiex -q -e PAPI_TOT_INS -e PAPI_BR_MSP a.out 1000 &gt;/dev/null
+
+Wir fangen an mit gcc -O: 57.5M Zyklen.
+
+1. Schritt: Bessere Optimierung: gcc -O3: 49.5M Zyklen.
+
+2. Schritt: Common Subexpression Elimination von dist(cities, ThisPt, j),
+sodass dieser Ausdruch nur einmal verwendet wird.
+Ergebnis: <a href=http://www.complang.tuwien.ac.at/anton/lvas/effizienz/tsp2.c>tsp2.c</a>, 49.0M Zyklen.
+
+Der Geschwindigkeitsvorteil durch diese Optimierung ist gering, weil
+der zweite Aufruf von dist in einem if ist, das im Durchschnitt
+H(n)=1+1/2+1/3+..., also ca. ln(n) mal erfolgreich ist.
+
+3. Schritt: Eliminieren von sqrt() im Aufruf von dist() in tsp().  Da
+sqrt() fuer positive Argumente monoton ist, nur postive Argumente
+vorkommen, und wir das Ergebnis nur fuer einen Größenvergleich
+verwenden, kann man sqrt bei diesem Aufruf weglassen.
+
+Wir machen das, indem wir eine Kopie von dist() namens DistSqrd()
+erzeugen; diese Kopie rufen wir von tsp() aus auf.  Die
+Originalversion von dist bleibt erhalten und kann von woanders
+aufgerufen werden (und wird auch von main() aufgerufen), ohne dass wir
+überprüfen müssen, ob wir dort auch sqrt() weglassen dürfen (wir
+dürfen nicht).
+
+Ergebnis: <a href=http://www.complang.tuwien.ac.at/anton/lvas/effizienz/tsp3.c>tsp3.c</a>, 20.9M Zyklen.
+
+4. Schritt: Eliminieren von visited[].  Statt per visited[] zu
+überprüfen, ob wir eine Stadt schon besucht haben, verwenden wir
+tour[], um nur über die Städte zu iterieren, die noch nicht dran waren
+(z.B. im letzten Aufruf der inneren Schleife nur mehr eine Stadt statt
+n, im Durchschnitt spart man die Hälfte der Iterationen der inneren
+Schleife.  Das erfordert allerdings größere Änderungen am Programm
+(siehe "diff tsp3.c tsp4.c").
+
+Ergebnis: <a href=http://www.complang.tuwien.ac.at/anton/lvas/effizienz/tsp4.c>tsp4.c</a>, 13.9M Zyklen.
+
+Ca. die Hälfte dieses Speedups beruht auf besserer Sprungvorhersage
+(die "if (!visited[j])" sind nicht besonders gut vorhersagbar).
+
+5. Schritt: Inlining von DistSqrd().
+
+Ergebnis: <a href=http://www.complang.tuwien.ac.at/anton/lvas/effizienz/tsp5.c>tsp5.c</a>, 13.9M Zyklen.
+
+6. Schritt: Y-Distanz später berechnen.  Die Distanz zwischen zwei
+Punkten auf der X-Achse ist sicher kleiner als die Gesamtdistanz; Wenn
+die X-Distanz zwischen der aktuellen Stadt und einer anderen Stadt
+größer ist als die bisher kürzeste Gesamtdistanz, und man braucht die
+andere Stadt nicht weiter betrachten.  Nur in den Fällen, in denen die
+X-Distanz kleiner ist (und das sind bei grossem n nicht so viele) muss
+man auch noch die Y-Distanz berechnen, um die Gesamtdistanz zu
+erhalten und vergleichen zu können.
+
+Ergebnis: <a href=http://www.complang.tuwien.ac.at/anton/lvas/effizienz/tsp6.c>tsp6.c</a>, 14.1M Zyklen.
+
+(Der 7. Schritt bei Bentley ist die Verwendung von ganzen Zahlen statt
+Gleitkommazahlen; diesen Schritt lassen wir hier aus, weil er die
+Resultate ändert.  Ausserdem ist bei dieser Berechnung (mit einem
+nicht unbeträchtlichen Anteil von Multiplikationen) auf modernen
+Maschinen nicht unbedingt eine Verbesserung zu erwarten.)
+
+8. Schritt: Direkte Umordnung der Städte.  Statt über ein Index-Array
+tour[] zu indizieren, wird tour[] zu einem Array von Städten, die
+direkt umgeordnet werden.  Erspart indirekte Zugriffe über das
+Index-Array, dafür wird das Umordnen teurer (kommt aber nur in der
+äußeren Schleife vor).  Hauptnachteil hier ist, dass sich das
+Interface von tsp() ändert, sodass alle Aufrufer geändert werden
+müssen (könnte man umgehen, indem man das Index-array noch zusätzlich
+mitführt).
+
+Ergebnis: <a href=http://www.complang.tuwien.ac.at/anton/lvas/effizienz/tsp8.c>tsp8.c</a>, 13.2M Zyklen.
+
+9. Schritt: Sentinel.  Die innere Schleife kann als Suchschleife
+aufgefasst werden, die nach einer Stadt sucht, die näher ist als die
+bisher gefundene.  Daher kann man die Sentinel-Technik anwenden, indem
+man die aktuelle Stadt (die sich selbst natürlich mindestens so nahe
+ist wie alle anderen) als Sentinel benutzt, um die Schleife
+abzubrechen; dadurch erspart man sich die Abfrage im for-Teil der
+inneren Schleife.  Da allerdings nicht bei der ersten näheren Stadt
+abgebrochen wird wie bei anderen Suchschleifen, muß man eine Abfrage
+nach dem Abbruch im inneren if-Statement einfügen, diese Abfrage kommt
+aber wesentlich seltener vor (H(n) mal) als die Abfrage im for-Teil.
+
+Ergebnis: <a href=http://www.complang.tuwien.ac.at/anton/lvas/effizienz/tsp9.c>tsp9.c</a>, 13.4M Zyklen.
+
+Die Ursache dieser Verlangsamung habe ich noch nicht näher untersucht.
+
+
+Zusammenfassung und Vergleich mit Ergebnissen aus [Bentley82]:
+
+Ergebnisse normalisiert auf die Version aus dem 6. Schritt:
+
+Celeron  PDP-KL10  HP1000  # nach Optimierung
+C        Pascal    C
+4.01     5.73      4.39    1 -O (bei gcc)
+2.87     -         -       1 -O3 (bei gcc)
+2.84     5.56      4.27    2 Common Subexpression Elimination
+1.35     2.95      2.78    3 Eliminieren von sqrt()
+1.05     2.59      2.63    4 Eliminieren von visited[]
+1.01     1.71      1.72    5 Inlining von DistSqrd()
+1        1         1       6 Y-Distanz später berechnen
+-        0.91      0.86    7 Integers statt Floats
+0.94     0.84      0.84    8 Direkte Umordnung statt Index-Array
+0.98     0.83      -       9 Sentinel
+
+</pre>
+<div id=emojidots_data_loaded style=display:none>true</div><div id=emojidots_state style=display:none>emoji_active</div><span class="cleanslate TridactylStatusIndicator TridactylModenormal">normal</span><iframe class="cleanslate hidden" id=cmdline_iframe loading=lazy style=height:0px!important></iframe>
