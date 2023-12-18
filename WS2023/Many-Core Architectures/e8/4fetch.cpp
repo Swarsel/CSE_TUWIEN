@@ -26,6 +26,49 @@ typedef double       ScalarType;
 #include "timer.hpp"
 
 
+const char *mSizeProgram(int M) {
+  const char *init = ""
+                     "#pragma OPENCL EXTENSION cl_khr_fp64 : enable\n"
+                     "";
+  const char *kernel_name = "__kernel void dot";
+  const char *kernel_body = "(__global double *x,\n"
+                            "                      __global double *y,\n"
+                            "                      __global double *z,\n"
+                            "                      unsigned int N\n)"
+                            "{\n"
+                            " __local double shared[128];\n"
+                            " double sum = 0;\n"
+                            " size_t id = get_local_id(0);\n"
+                            "  for (unsigned int i  = get_global_id(0);\n"
+                            "                    i  < N;\n"
+                            "                    i += get_global_size(0))\n"
+                            " sum += y[i] * x[i];\n"
+                            " shared[id] = sum;\n"
+                            " for (int stride  = get_local_size(0)/2;\n"
+                            "                    stride  > 0;\n"
+                            "                    stride /= 2)\n"
+                            "   {\n"
+                            " barrier(CLK_GLOBAL_MEM_FENCE);\n"
+                            " if (id<stride) shared[id]+=shared[id+stride];\n"
+                            "}\n"
+                            " barrier(CLK_GLOBAL_MEM_FENCE);\n"
+                            " if (id==0) z[get_group_id(0)]=shared[0];"
+                            ""
+                            "}";
+  char *var = (char *)malloc( sizeof(char) * (std::string(init).length() + M * (4 + std::string(kernel_body).length() + std::string(kernel_name).length())));
+  strcpy(var, init);
+
+  for (int i = 0; i < M; i++) {
+    strcat(var, kernel_name);
+    std::string no = std::to_string(i);
+    char const *no_char = no.c_str();
+    strcat(var, no_char);
+    strcat(var, kernel_body);
+  }
+  const char *out = var;
+  return out;
+}
+
 const char *my_opencl_program = ""
                                 "#pragma OPENCL EXTENSION cl_khr_fp64 : enable\n"    // required to enable 'double' inside OpenCL programs
                                 ""
@@ -52,13 +95,12 @@ const char *my_opencl_program = ""
                                 " barrier(CLK_GLOBAL_MEM_FENCE);\n"
                                 " if (id==0) z[get_group_id(0)]=shared[0];"
                                 ""
-
                                 "}";  // you can have multiple kernels within a single OpenCL program. For simplicity, this OpenCL program contains only a single kernel.
 
 
 int main(int argc, char *argv[]) {
   cl_int err;
-  int N = std::atoi(argv[1]);
+  int M = std::atoi(argv[1]);
 
   //
   /////////////////////////// Part 1: Set up an OpenCL context with one device ///////////////////////////////////
@@ -111,8 +153,9 @@ int main(int argc, char *argv[]) {
   //
   // Build the program:
   //
-  size_t source_len = std::string(my_opencl_program).length();
-  cl_program prog = clCreateProgramWithSource(my_context, 1, &my_opencl_program, &source_len, &err);OPENCL_ERR_CHECK(err);
+  const char *program = mSizeProgram(M);
+  size_t source_len = std::string(program).length();
+  cl_program prog = clCreateProgramWithSource(my_context, 1, &program, &source_len, &err);OPENCL_ERR_CHECK(err);
   err = clBuildProgram(prog, 0, NULL, NULL, NULL, NULL);
 
   //
@@ -135,7 +178,9 @@ int main(int argc, char *argv[]) {
   //
   // Extract the only kernel in the program:
   //
-  cl_kernel my_kernel = clCreateKernel(prog, "dot", &err); OPENCL_ERR_CHECK(err);
+  timer.reset();
+  cl_kernel my_kernel = clCreateKernel(prog, "dot0", &err); OPENCL_ERR_CHECK(err);
+  std::cout << timer.get();
 
   // std::cout << "Time to compile and create kernel: " << timer.get() << std::endl;
 
@@ -147,7 +192,7 @@ int main(int argc, char *argv[]) {
   //
   // Set up buffers on host:
   //
-  cl_uint vector_size = N;
+  cl_uint vector_size = 128;
   std::vector<ScalarType> x(vector_size, 1.0);
   std::vector<ScalarType> y(vector_size, 2.0);
   std::vector<ScalarType> z(vector_size, 0.0);
@@ -205,7 +250,7 @@ int main(int argc, char *argv[]) {
     dot_sum += z[i];
   }
   // std::cout << dot_sum;
-  std::cout << timer.get();
+  // std::cout << timer.get();
   // std::cout << "y: " << y[0] << " " << y[1] << " " << y[2] << " ..." << std::endl;
 
   //
