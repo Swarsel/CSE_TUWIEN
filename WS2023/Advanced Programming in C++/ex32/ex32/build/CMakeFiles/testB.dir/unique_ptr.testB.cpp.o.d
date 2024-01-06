@@ -1,0 +1,25 @@
+CMakeFiles/testB.dir/unique_ptr.testB.cpp.o: \
+ /home/swarsel/Documents/GitHub/ex32/ex32/unique_ptr.testB.cpp \
+ /nix/store/jhi4wsbrxfscrf57k46d1lfq1v8d25kx-glibc-2.38-27-dev/include/stdc-predef.h \
+ /home/swarsel/Documents/GitHub/ex32/ex32/unique_ptr.hpp \
+ /nix/store/qfqjymymsd2x29yknsgllfiq1h64s3f4-gcc-12.3.0/include/c++/12.3.0/utility \
+ /nix/store/qfqjymymsd2x29yknsgllfiq1h64s3f4-gcc-12.3.0/include/c++/12.3.0/x86_64-unknown-linux-gnu/bits/c++config.h \
+ /nix/store/qfqjymymsd2x29yknsgllfiq1h64s3f4-gcc-12.3.0/include/c++/12.3.0/x86_64-unknown-linux-gnu/bits/os_defines.h \
+ /nix/store/jhi4wsbrxfscrf57k46d1lfq1v8d25kx-glibc-2.38-27-dev/include/features.h \
+ /nix/store/jhi4wsbrxfscrf57k46d1lfq1v8d25kx-glibc-2.38-27-dev/include/features-time64.h \
+ /nix/store/jhi4wsbrxfscrf57k46d1lfq1v8d25kx-glibc-2.38-27-dev/include/bits/wordsize.h \
+ /nix/store/jhi4wsbrxfscrf57k46d1lfq1v8d25kx-glibc-2.38-27-dev/include/bits/timesize.h \
+ /nix/store/jhi4wsbrxfscrf57k46d1lfq1v8d25kx-glibc-2.38-27-dev/include/sys/cdefs.h \
+ /nix/store/jhi4wsbrxfscrf57k46d1lfq1v8d25kx-glibc-2.38-27-dev/include/bits/long-double.h \
+ /nix/store/jhi4wsbrxfscrf57k46d1lfq1v8d25kx-glibc-2.38-27-dev/include/gnu/stubs.h \
+ /nix/store/jhi4wsbrxfscrf57k46d1lfq1v8d25kx-glibc-2.38-27-dev/include/gnu/stubs-64.h \
+ /nix/store/qfqjymymsd2x29yknsgllfiq1h64s3f4-gcc-12.3.0/include/c++/12.3.0/x86_64-unknown-linux-gnu/bits/cpu_defines.h \
+ /nix/store/qfqjymymsd2x29yknsgllfiq1h64s3f4-gcc-12.3.0/include/c++/12.3.0/pstl/pstl_config.h \
+ /nix/store/qfqjymymsd2x29yknsgllfiq1h64s3f4-gcc-12.3.0/include/c++/12.3.0/bits/stl_relops.h \
+ /nix/store/qfqjymymsd2x29yknsgllfiq1h64s3f4-gcc-12.3.0/include/c++/12.3.0/bits/stl_pair.h \
+ /nix/store/qfqjymymsd2x29yknsgllfiq1h64s3f4-gcc-12.3.0/include/c++/12.3.0/type_traits \
+ /nix/store/qfqjymymsd2x29yknsgllfiq1h64s3f4-gcc-12.3.0/include/c++/12.3.0/bits/move.h \
+ /nix/store/qfqjymymsd2x29yknsgllfiq1h64s3f4-gcc-12.3.0/include/c++/12.3.0/bits/utility.h \
+ /nix/store/qfqjymymsd2x29yknsgllfiq1h64s3f4-gcc-12.3.0/include/c++/12.3.0/initializer_list \
+ /nix/store/qfqjymymsd2x29yknsgllfiq1h64s3f4-gcc-12.3.0/include/c++/12.3.0/cassert \
+ /nix/store/jhi4wsbrxfscrf57k46d1lfq1v8d25kx-glibc-2.38-27-dev/include/assert.h

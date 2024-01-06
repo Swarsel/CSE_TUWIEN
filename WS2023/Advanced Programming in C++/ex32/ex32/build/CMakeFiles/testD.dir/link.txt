@@ -1,0 +1,1 @@
+/nix/store/sfgnb6rr428bssyrs54d6d0vv2avi95c-gcc-wrapper-12.3.0/bin/g++ -g CMakeFiles/testD.dir/unique_ptr.testD.cpp.o -o testD 
